@@ -84,45 +84,6 @@ export default function AppLayout() {
                     Nenhum sistema liberado. Solicite acesso ao administrador.
                   </div>
                 )}
-            return (
-              <>
-                {SISTEMAS.map((sis) => {
-                  const isActiveSystem = currentPath === `/setor/${sis.nome}` ||
-                    sis.setores.some((r) => currentPath === `/setor/${norm(r).setor}`);
-                  const isOpen = open[sis.nome] ?? isActiveSystem;
-                  return (
-                    <div key={sis.nome}>
-                      <div className="flex items-center gap-1">
-                        {sis.setores.length > 0 && (
-                          <button
-                            type="button"
-                            onClick={() => setOpen((o) => ({ ...o, [sis.nome]: !isOpen }))}
-                            className="p-1 rounded hover:bg-muted/60 text-muted-foreground"
-                            aria-label={isOpen ? "Recolher" : "Expandir"}
-                          >
-                            <ChevronRight className={cn("size-3 transition-transform", isOpen && "rotate-90")} />
-                          </button>
-                        )}
-                        <div className="flex-1">
-                          <NavItem to={`/setor/${encodeURIComponent(sis.nome)}`} icon={<span className="size-1.5 rounded-full bg-accent" />} label={sis.nome} />
-                        </div>
-                      </div>
-                      {isOpen && sis.setores.map((r) => {
-                        const { setor, label } = norm(r);
-                        return (
-                          <NavLink key={label} to={`/setor/${encodeURIComponent(setor)}`}
-                            className={({ isActive }) => cn(
-                              "flex items-center gap-2.5 pl-9 pr-3 py-1.5 rounded-md text-xs transition",
-                              isActive ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-                            )}>
-                            <span className="size-1 rounded-full bg-primary" />
-                            <span className="truncate">{label}</span>
-                          </NavLink>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
                 {outros.length > 0 && (
                   <>
                     <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
