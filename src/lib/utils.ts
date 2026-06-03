@@ -10,8 +10,8 @@ export function codigoNum(codigo: string): number {
 }
 
 export const SETORES = [
-  "Aferição de Pneus", "Cheklist", "Comercial", "Faturamento", "Financeiro", "Frota", "Gerenciamento de Risco",
-  "Mobile", "Monitoramento", "Operacional", "RH", "TI",
+  "Aferição de Pneus", "Bee Vale RH", "Cheklist", "Comercial", "Faturamento", "Financeiro", "Frota", "Gerenciamento de Risco",
+  "Mobile", "Monitoramento", "Operacional", "RH", "Solides RH", "TI",
 ] as const;
 export type Setor = (typeof SETORES)[number];
 
