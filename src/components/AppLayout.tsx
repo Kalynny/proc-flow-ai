@@ -28,6 +28,12 @@ export default function AppLayout() {
           <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
             <FolderTree className="size-3" /> Sistemas
           </div>
+          {["GW-WEBTRANS", "GW-FROTA", "GW-MOBILE", "GW-LOGIS", "A52", "NGO", "SOLIDES", "BEE VALE", "PROLOG"].map((s) => (
+            <NavItem key={s} to={`/setor/${encodeURIComponent(s)}`} icon={<span className="size-1.5 rounded-full bg-accent" />} label={s} />
+          ))}
+          <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
+            <FolderTree className="size-3" /> Setores
+          </div>
           {SETORES.map((s) => (
             <NavItem key={s} to={`/setor/${encodeURIComponent(s)}`} icon={<span className="size-1.5 rounded-full bg-primary" />} label={s} />
           ))}
