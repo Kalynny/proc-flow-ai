@@ -2,7 +2,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { SETORES, cn } from "@/lib/utils";
-import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, ChevronRight, Shield } from "lucide-react";
+import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, ChevronRight, Shield, BookOpen } from "lucide-react";
 
 export default function AppLayout() {
   const { signOut, user, role } = useAuth();
@@ -27,6 +27,7 @@ export default function AppLayout() {
         </div>
         <nav className="p-3 space-y-1 flex-1 overflow-y-auto">
           <NavItem to="/" icon={<LayoutDashboard className="size-4" />} label="Dashboard" end />
+          <NavItem to="/treinamentos" icon={<BookOpen className="size-4" />} label="Treinamentos" />
           {canEdit && <NavItem to="/novo" icon={<Sparkles className="size-4" />} label="Novo c/ IA" />}
           {role === "admin" && <NavItem to="/permissoes" icon={<Shield className="size-4" />} label="Permissões" />}
           <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
