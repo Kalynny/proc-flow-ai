@@ -45,7 +45,7 @@ export default function Dashboard() {
         <div>
           <div className="text-xs uppercase tracking-wider text-primary mb-1">Visão geral</div>
           <h1 className="text-3xl font-bold">Painel do Conhecimento</h1>
-          <p className="text-muted-foreground mt-1">Procedimentos, treinamentos e indicadores em tempo real.</p>
+          <p className="text-muted-foreground mt-1">Base de Conhecimento, Treinamentos Escritos e Áudios Visuais.</p>
         </div>
         {(role === "admin" || role === "editor") && (
           <Link to="/novo" className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-md font-medium hover:bg-primary/90 transition">
