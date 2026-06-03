@@ -1,4 +1,8 @@
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
 
 const SYSTEM = `Você é uma IA especializada em criação de procedimentos operacionais para transportadoras.
 Receba um conteúdo bruto (transcrição, descrição ou passo a passo) e gere um procedimento operacional padronizado, profissional e claro, em português do Brasil.
@@ -53,8 +57,15 @@ Deno.serve(async (req) => {
     const data = await resp.json();
     const content = data.choices?.[0]?.message?.content ?? "{}";
     let parsed: any;
-    try { parsed = JSON.parse(content); }
-    catch { parsed = { titulo: "Procedimento", passo_a_passo: [content] }; }
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      const cleaned = content.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+      const start = cleaned.search(/[\{\[]/);
+      const end = Math.max(cleaned.lastIndexOf("}"), cleaned.lastIndexOf("]"));
+      try { parsed = JSON.parse(cleaned.substring(start, end + 1)); }
+      catch { parsed = { titulo: "Procedimento", passo_a_passo: [content] }; }
+    }
 
     return new Response(JSON.stringify(parsed), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
