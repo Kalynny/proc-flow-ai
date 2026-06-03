@@ -40,6 +40,8 @@ export default function AppLayout() {
               { nome: "SOLIDES", setores: ["Solides RH"] },
               { nome: "BEE VALE", setores: ["Bee Vale RH"] },
               { nome: "PROLOG", setores: ["Aferição de Pneus", "Cheklist"] },
+              { nome: "GAME TRUCK", setores: [] },
+              { nome: "TRUCK DIGITAL", setores: [] },
             ];
             const norm = (r: SetorRef) => typeof r === "string" ? { setor: r, label: r } : r;
             const usados = new Set(SISTEMAS.flatMap((s) => s.setores.map((r) => norm(r).setor)));
