@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Truck, Mail, Lock, Loader2 } from "lucide-react";
+import { Truck, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const nav = useNavigate();
@@ -86,7 +86,7 @@ export default function Login() {
             <Field icon={<Mail className="size-4" />} placeholder="Nome completo" value={name} onChange={(v) => setName(v)} />
           )}
           <Field icon={<Mail className="size-4" />} type="email" placeholder="email@empresa.com" value={email} onChange={setEmail} />
-          <Field icon={<Lock className="size-4" />} type="password" placeholder="Senha" value={password} onChange={setPassword} />
+          <PasswordField value={password} onChange={setPassword} />
 
           <button disabled={loading} className="w-full bg-primary text-primary-foreground py-2.5 rounded-md font-medium hover:bg-primary/90 transition flex items-center justify-center gap-2">
             {loading && <Loader2 className="size-4 animate-spin" />}
@@ -117,6 +117,21 @@ function Field({ icon, type = "text", placeholder, value, onChange }:
       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">{icon}</span>
       <input type={type} required placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)}
         className="w-full bg-background/60 border border-border rounded-md py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+    </div>
+  );
+}
+
+function PasswordField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"><Lock className="size-4" /></span>
+      <input type={show ? "text" : "password"} required placeholder="Senha" value={value} onChange={(e) => onChange(e.target.value)}
+        className="w-full bg-background/60 border border-border rounded-md py-2.5 pl-9 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+      <button type="button" onClick={() => setShow((s) => !s)} aria-label={show ? "Ocultar senha" : "Mostrar senha"}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+        {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+      </button>
     </div>
   );
 }
