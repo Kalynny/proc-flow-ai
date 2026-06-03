@@ -40,7 +40,7 @@ export default function AppLayout() {
               { nome: "SOLIDES", setores: ["Solides RH"] },
               { nome: "BEE VALE", setores: ["Bee Vale RH"] },
               { nome: "PROLOG", setores: ["Aferição de Pneus", "Cheklist"] },
-              { nome: "GAME TRUCK", setores: [] },
+              { nome: "GAME TRUCK", setores: ["Ranking Motoristas"] },
               { nome: "TRUCK DIGITAL", setores: ["Contrato de Frete"] },
             ];
             const norm = (r: SetorRef) => typeof r === "string" ? { setor: r, label: r } : r;
