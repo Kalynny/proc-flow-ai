@@ -11,6 +11,7 @@ import SetorPage from "@/pages/SetorPage";
 import ProcedimentoPage from "@/pages/ProcedimentoPage";
 import NovoProcedimento from "@/pages/NovoProcedimento";
 import EditarProcedimento from "@/pages/EditarProcedimento";
+import Permissoes from "@/pages/Permissoes";
 import "@/index.css";
 
 const qc = new QueryClient();
