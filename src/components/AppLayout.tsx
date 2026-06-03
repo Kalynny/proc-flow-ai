@@ -38,7 +38,7 @@ export default function AppLayout() {
               { nome: "NGO", setores: ["Gerenciamento de Risco"] },
               { nome: "SOLIDES", setores: ["RH"] },
               { nome: "BEE VALE", setores: ["RH"] },
-              { nome: "PROLOG", setores: [] },
+              { nome: "PROLOG", setores: ["Aferição de Pneus", "Cheklist"] },
             ];
             const usados = new Set(SISTEMAS.flatMap((s) => s.setores));
             const outros = SETORES.filter((s) => !usados.has(s));
