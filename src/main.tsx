@@ -12,6 +12,7 @@ import ProcedimentoPage from "@/pages/ProcedimentoPage";
 import NovoProcedimento from "@/pages/NovoProcedimento";
 import EditarProcedimento from "@/pages/EditarProcedimento";
 import Permissoes from "@/pages/Permissoes";
+import Treinamentos from "@/pages/Treinamentos";
 import "@/index.css";
 
 const qc = new QueryClient();
