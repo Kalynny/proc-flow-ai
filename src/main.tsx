@@ -31,6 +31,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/procedimento/:id" element={<ProcedimentoPage />} />
               <Route path="/novo" element={<NovoProcedimento />} />
               <Route path="/procedimento/:id/editar" element={<EditarProcedimento />} />
+              <Route path="/permissoes" element={<Permissoes />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
