@@ -28,6 +28,7 @@ export default function AppLayout() {
         <nav className="p-3 space-y-1 flex-1 overflow-y-auto">
           <NavItem to="/" icon={<LayoutDashboard className="size-4" />} label="Dashboard" end />
           {canEdit && <NavItem to="/novo" icon={<Sparkles className="size-4" />} label="Novo c/ IA" />}
+          {role === "admin" && <NavItem to="/permissoes" icon={<Shield className="size-4" />} label="Permissões" />}
           <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
             <FolderTree className="size-3" /> Sistemas
           </div>
