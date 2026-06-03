@@ -31,7 +31,7 @@ export default function AppLayout() {
           {(() => {
             type SetorRef = string | { setor: string; label: string };
             const SISTEMAS: { nome: string; setores: SetorRef[] }[] = [
-              { nome: "GW-WEBTRANS", setores: ["Comercial", "Faturamento", "Financeiro", "Gerenciamento de Risco", "Operacional"] },
+              { nome: "GW-WEBTRANS", setores: ["Comercial", "Contrato de Frete", "Faturamento", "Financeiro", "Gerenciamento de Risco", "Operacional"] },
               { nome: "GW-FROTA", setores: ["Frota"] },
               { nome: "GW-MOBILE", setores: ["Mobile"] },
               { nome: "GW-LOGIS", setores: ["Nota Fiscal"] },
