@@ -1,0 +1,1 @@
+ALTER TYPE setor_enum ADD VALUE IF NOT EXISTS 'TI';
