@@ -34,7 +34,7 @@ export default function AppLayout() {
               { nome: "GW-WEBTRANS", setores: ["Comercial", "Faturamento", "Financeiro", "Gerenciamento de Risco", "Operacional"] },
               { nome: "GW-FROTA", setores: ["Frota"] },
               { nome: "GW-MOBILE", setores: ["Mobile"] },
-              { nome: "GW-LOGIS", setores: [] },
+              { nome: "GW-LOGIS", setores: ["Nota Fiscal"] },
               { nome: "A52", setores: ["Monitoramento"] },
               { nome: "NGO", setores: ["Gerenciamento de Risco"] },
               { nome: "SOLIDES", setores: ["Solides RH"] },

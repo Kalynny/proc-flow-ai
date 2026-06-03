@@ -1,0 +1,1 @@
+ALTER TYPE public.setor_enum ADD VALUE IF NOT EXISTS 'Nota Fiscal';
