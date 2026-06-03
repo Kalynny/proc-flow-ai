@@ -57,7 +57,7 @@ export default function Login() {
         <form onSubmit={submit} className="w-full max-w-sm space-y-5 glass rounded-xl p-7">
           <div>
             <h2 className="text-2xl font-bold">{mode === "signin" ? "Entrar" : "Criar conta"}</h2>
-            <p className="text-sm text-muted-foreground mt-1">Acesse o Portal de Conhecimento da transportadora.</p>
+            <p className="text-sm text-muted-foreground mt-1">Acesse o Portal de Conhecimento da Imediata Transportes</p>
           </div>
 
           <button type="button" onClick={google} disabled={loading}
