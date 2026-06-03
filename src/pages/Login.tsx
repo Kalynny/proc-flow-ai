@@ -16,9 +16,10 @@ export default function Login() {
     e.preventDefault(); setLoading(true);
     try {
       if (mode === "signup") {
+        if (!departamento) { toast.error("Selecione um departamento"); setLoading(false); return; }
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: `${window.location.origin}/`, data: { full_name: name } },
+          options: { emailRedirectTo: `${window.location.origin}/`, data: { full_name: name, departamento } },
         });
         if (error) throw error;
         toast.success("Conta criada! Você já pode entrar.");
