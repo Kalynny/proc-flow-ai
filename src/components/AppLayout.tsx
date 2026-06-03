@@ -1,14 +1,15 @@
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
-import { SETORES, cn } from "@/lib/utils";
+import { SETORES, SISTEMAS, normSistemaRef, cn } from "@/lib/utils";
 import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, ChevronRight, Shield, BookOpen } from "lucide-react";
 
 export default function AppLayout() {
-  const { signOut, user, role } = useAuth();
+  const { signOut, user, role, sistemas: allowed } = useAuth();
   const nav = useNavigate();
   const location = useLocation();
   const canEdit = role === "admin" || role === "editor";
+  const isAdmin = role === "admin";
   const [open, setOpen] = useState<Record<string, boolean>>({});
 
   return (
@@ -34,24 +35,55 @@ export default function AppLayout() {
             <FolderTree className="size-3" /> Sistemas
           </div>
           {(() => {
-            type SetorRef = string | { setor: string; label: string };
-            const SISTEMAS: { nome: string; setores: SetorRef[] }[] = [
-              { nome: "GW-WEBTRANS", setores: ["Comercial", "Contrato de Frete", "Faturamento", "Financeiro", "Gerenciamento de Risco", "Operacional"] },
-              { nome: "GW-FROTA", setores: ["Frota"] },
-              { nome: "GW-MOBILE", setores: ["Mobile"] },
-              { nome: "GW-LOGIS", setores: ["Nota Fiscal"] },
-              { nome: "A52", setores: ["Monitoramento"] },
-              { nome: "NGO", setores: ["Gerenciamento de Risco"] },
-              { nome: "SOLIDES", setores: ["Solides RH"] },
-              { nome: "BEE VALE", setores: ["Bee Vale RH"] },
-              { nome: "PROLOG", setores: ["Aferição de Pneus", "Cheklist"] },
-              { nome: "GAME TRUCK", setores: ["Ranking Motoristas"] },
-              { nome: "TRUCK DIGITAL", setores: ["Contrato de Frete"] },
-            ];
-            const norm = (r: SetorRef) => typeof r === "string" ? { setor: r, label: r } : r;
-            const usados = new Set(SISTEMAS.flatMap((s) => s.setores.map((r) => norm(r).setor)));
-            const outros = SETORES.filter((s) => !usados.has(s));
+            const visiveis = isAdmin ? SISTEMAS : SISTEMAS.filter((s) => allowed.includes(s.nome));
+            const setoresLiberados = new Set(visiveis.flatMap((s) => s.setores.map((r) => normSistemaRef(r).setor)));
+            const usados = new Set(SISTEMAS.flatMap((s) => s.setores.map((r) => normSistemaRef(r).setor)));
+            const outros = isAdmin ? SETORES.filter((s) => !usados.has(s)) : [];
             const currentPath = decodeURIComponent(location.pathname);
+            return (
+              <>
+                {visiveis.map((sis) => {
+                  const isActiveSystem = currentPath === `/setor/${sis.nome}` ||
+                    sis.setores.some((r) => currentPath === `/setor/${normSistemaRef(r).setor}`);
+                  const isOpen = open[sis.nome] ?? isActiveSystem;
+                  return (
+                    <div key={sis.nome}>
+                      <div className="flex items-center gap-1">
+                        {sis.setores.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setOpen((o) => ({ ...o, [sis.nome]: !isOpen }))}
+                            className="p-1 rounded hover:bg-muted/60 text-muted-foreground"
+                            aria-label={isOpen ? "Recolher" : "Expandir"}
+                          >
+                            <ChevronRight className={cn("size-3 transition-transform", isOpen && "rotate-90")} />
+                          </button>
+                        )}
+                        <div className="flex-1">
+                          <NavItem to={`/setor/${encodeURIComponent(sis.nome)}`} icon={<span className="size-1.5 rounded-full bg-accent" />} label={sis.nome} />
+                        </div>
+                      </div>
+                      {isOpen && sis.setores.map((r) => {
+                        const { setor, label } = normSistemaRef(r);
+                        return (
+                          <NavLink key={label} to={`/setor/${encodeURIComponent(setor)}`}
+                            className={({ isActive }) => cn(
+                              "flex items-center gap-2.5 pl-9 pr-3 py-1.5 rounded-md text-xs transition",
+                              isActive ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                            )}>
+                            <span className="size-1 rounded-full bg-primary" />
+                            <span className="truncate">{label}</span>
+                          </NavLink>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+                {visiveis.length === 0 && !isAdmin && (
+                  <div className="px-3 py-6 text-xs text-muted-foreground">
+                    Nenhum sistema liberado. Solicite acesso ao administrador.
+                  </div>
+                )}
             return (
               <>
                 {SISTEMAS.map((sis) => {
