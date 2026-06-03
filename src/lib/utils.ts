@@ -29,6 +29,7 @@ export const SUBPASTAS: Partial<Record<Setor, string[]>> = {
   "Aferição de Pneus": ["Benefícios", "Jornada de Trabalho", "Palestras e Treinamento", "Recrutamento"],
   Cheklist: ["Benefícios", "Jornada de Trabalho", "Palestras e Treinamento", "Recrutamento"],
   "Contrato de Frete": ["Benefícios", "Jornada de Trabalho", "Palestras e Treinamento", "Recrutamento"],
+  "Nota Fiscal": ["Benefícios", "Jornada de Trabalho", "Palestras e Treinamento", "Recrutamento"],
   TI: ["Gestão de Sistemas", "Inovação", "Integrações"],
 };
 
