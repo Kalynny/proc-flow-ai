@@ -13,6 +13,11 @@ export const SETORES = [
   "Aferição de Pneus", "Bee Vale RH", "Cheklist", "Comercial", "Contrato de Frete", "Faturamento", "Financeiro", "Frota", "Gerenciamento de Risco",
   "Mobile", "Monitoramento", "Nota Fiscal", "Operacional", "Ranking Motoristas", "Solides RH",
 ] as const;
+
+export const DEPARTAMENTOS = [
+  "Financeiro", "Operacional", "Faturamento", "Frota", "Recursos Humanos", "Monitoramento", "Gerenciamento de Risco",
+] as const;
+export type Departamento = (typeof DEPARTAMENTOS)[number];
 export type Setor = (typeof SETORES)[number];
 
 export const SUBPASTAS: Partial<Record<Setor, string[]>> = {

@@ -2,21 +2,24 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Truck, Mail, Lock, Loader2 } from "lucide-react";
+import { Truck, Mail, Lock, Loader2, Building2 } from "lucide-react";
+import { DEPARTAMENTOS } from "@/lib/utils";
 
 export default function Login() {
   const nav = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [name, setName] = useState("");
+  const [email, setEmail] = useState(""); const [password, setPassword] = useState (""); const [name, setName] = useState("");
+  const [departamento, setDepartamento] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault(); setLoading(true);
     try {
       if (mode === "signup") {
+        if (!departamento) { toast.error("Selecione um departamento"); setLoading(false); return; }
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: `${window.location.origin}/`, data: { full_name: name } },
+          options: { emailRedirectTo: `${window.location.origin}/`, data: { full_name: name, departamento } },
         });
         if (error) throw error;
         toast.success("Conta criada! Você já pode entrar.");
@@ -72,7 +75,21 @@ export default function Login() {
           </div>
 
           {mode === "signup" && (
-            <Field icon={<Mail className="size-4" />} placeholder="Nome completo" value={name} onChange={(v) => setName(v)} />
+            <>
+              <Field icon={<Mail className="size-4" />} placeholder="Nome completo" value={name} onChange={(v) => setName(v)} />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"><Building2 className="size-4" /></span>
+                <select
+                  required
+                  value={departamento}
+                  onChange={(e) => setDepartamento(e.target.value)}
+                  className="w-full bg-background/60 border border-border rounded-md py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                >
+                  <option value="">Selecione um departamento</option>
+                  {DEPARTAMENTOS.map((d) => <option key={d} value={d}>{d}</option>)}
+                </select>
+              </div>
+            </>
           )}
           <Field icon={<Mail className="size-4" />} type="email" placeholder="email@empresa.com" value={email} onChange={setEmail} />
           <Field icon={<Lock className="size-4" />} type="password" placeholder="Senha" value={password} onChange={setPassword} />

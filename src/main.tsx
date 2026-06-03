@@ -11,6 +11,7 @@ import SetorPage from "@/pages/SetorPage";
 import ProcedimentoPage from "@/pages/ProcedimentoPage";
 import NovoProcedimento from "@/pages/NovoProcedimento";
 import EditarProcedimento from "@/pages/EditarProcedimento";
+import Permissoes from "@/pages/Permissoes";
 import "@/index.css";
 
 const qc = new QueryClient();
@@ -30,6 +31,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/procedimento/:id" element={<ProcedimentoPage />} />
               <Route path="/novo" element={<NovoProcedimento />} />
               <Route path="/procedimento/:id/editar" element={<EditarProcedimento />} />
+              <Route path="/permissoes" element={<Permissoes />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
