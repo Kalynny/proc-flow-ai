@@ -86,7 +86,7 @@ export default function Login() {
             <Field icon={<Mail className="size-4" />} placeholder="Nome completo" value={name} onChange={(v) => setName(v)} />
           )}
           <Field icon={<Mail className="size-4" />} type="email" placeholder="email@empresa.com" value={email} onChange={setEmail} />
-          <Field icon={<Lock className="size-4" />} type="password" placeholder="Senha" value={password} onChange={setPassword} />
+          <PasswordField value={password} onChange={setPassword} />
 
           <button disabled={loading} className="w-full bg-primary text-primary-foreground py-2.5 rounded-md font-medium hover:bg-primary/90 transition flex items-center justify-center gap-2">
             {loading && <Loader2 className="size-4 animate-spin" />}
