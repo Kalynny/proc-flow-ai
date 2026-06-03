@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { DEPARTAMENTOS, SISTEMA_NOMES } from "@/lib/utils";
 import { toast } from "sonner";
-import { Shield, Loader2, Check } from "lucide-react";
+import { Shield, Loader2, Check, KeyRound, X, Eye, EyeOff } from "lucide-react";
 
 type Row = {
   id: string;
@@ -20,6 +20,7 @@ export default function Permissoes() {
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [pwdUser, setPwdUser] = useState<Row | null>(null);
 
   useEffect(() => { if (role === "admin") load(); else setLoading(false); }, [role]);
 
@@ -120,6 +121,7 @@ export default function Permissoes() {
                 <th className="text-left px-4 py-3">Departamento</th>
                 <th className="text-left px-4 py-3">Nível</th>
                 <th className="text-left px-4 py-3">Sistemas</th>
+                <th className="text-left px-4 py-3">Senha</th>
               </tr>
             </thead>
             <tbody>
@@ -185,15 +187,78 @@ export default function Permissoes() {
                       </div>
                     )}
                   </td>
+                  <td className="px-4 py-3">
+                    <button
+                      type="button"
+                      onClick={() => setPwdUser(u)}
+                      className="inline-flex items-center gap-1.5 bg-background/60 border border-border rounded-md py-1.5 px-3 text-sm hover:bg-muted/60"
+                    >
+                      <KeyRound className="size-3.5" /> Redefinir
+                    </button>
+                  </td>
                 </tr>
               ))}
               {rows.length === 0 && (
-                <tr><td colSpan={4} className="px-4 py-10 text-center text-muted-foreground">Nenhum usuário encontrado.</td></tr>
+                <tr><td colSpan={5} className="px-4 py-10 text-center text-muted-foreground">Nenhum usuário encontrado.</td></tr>
               )}
             </tbody>
           </table>
         </div>
       )}
+      {pwdUser && <PasswordModal user={pwdUser} onClose={() => setPwdUser(null)} />}
+    </div>
+  );
+}
+
+function PasswordModal({ user, onClose }: { user: Row; onClose: () => void }) {
+  const [pwd, setPwd] = useState("");
+  const [show, setShow] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (pwd.length < 6) { toast.error("Senha mínimo 6 caracteres"); return; }
+    setSaving(true);
+    const { data, error } = await supabase.functions.invoke("admin-reset-password", {
+      body: { user_id: user.id, password: pwd },
+    });
+    setSaving(false);
+    if (error || (data as any)?.error) {
+      toast.error((data as any)?.error || error?.message || "Erro ao redefinir");
+      return;
+    }
+    toast.success("Senha redefinida com sucesso");
+    onClose();
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-background/80 backdrop-blur p-4" onClick={onClose}>
+      <form onSubmit={submit} onClick={(e) => e.stopPropagation()} className="glass rounded-xl p-6 w-full max-w-sm space-y-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <h3 className="font-semibold flex items-center gap-2"><KeyRound className="size-4 text-primary" /> Redefinir senha</h3>
+            <p className="text-xs text-muted-foreground mt-1">{user.full_name || user.email}</p>
+          </div>
+          <button type="button" onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="size-4" /></button>
+        </div>
+        <div className="relative">
+          <input
+            type={show ? "text" : "password"}
+            autoFocus
+            value={pwd}
+            onChange={(e) => setPwd(e.target.value)}
+            placeholder="Nova senha (mín. 6 caracteres)"
+            className="w-full bg-background/60 border border-border rounded-md py-2.5 px-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+          />
+          <button type="button" onClick={() => setShow((s) => !s)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+            {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          </button>
+        </div>
+        <button disabled={saving} className="w-full bg-primary text-primary-foreground py-2.5 rounded-md font-medium hover:bg-primary/90 transition flex items-center justify-center gap-2">
+          {saving && <Loader2 className="size-4 animate-spin" />} Salvar nova senha
+        </button>
+      </form>
     </div>
   );
 }
