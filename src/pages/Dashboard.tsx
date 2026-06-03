@@ -55,7 +55,7 @@ export default function Dashboard() {
       </header>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Stat icon={<Layers />} label="Procedimentos" value={items.length} />
+        <Stat icon={<Layers />} label="Treinamentos" value={items.length} />
         <Stat icon={<Video />} label="Com vídeo" value={totalVideos} />
         <Stat icon={<FileText />} label="Setores ativos" value={Object.keys(bySetor).length} />
         <Stat icon={<Activity />} label="Última atualização" value={items.length ? new Date(items.reduce((a, b) => (a.updated_at > b.updated_at ? a : b)).updated_at).toLocaleDateString("pt-BR") : "—"} />
