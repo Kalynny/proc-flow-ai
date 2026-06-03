@@ -28,15 +28,50 @@ export default function AppLayout() {
           <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
             <FolderTree className="size-3" /> Sistemas
           </div>
-          {["GW-WEBTRANS", "GW-FROTA", "GW-MOBILE", "GW-LOGIS", "A52", "NGO", "SOLIDES", "BEE VALE", "PROLOG"].map((s) => (
-            <NavItem key={s} to={`/setor/${encodeURIComponent(s)}`} icon={<span className="size-1.5 rounded-full bg-accent" />} label={s} />
-          ))}
-          <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
-            <FolderTree className="size-3" /> Setores
-          </div>
-          {SETORES.map((s) => (
-            <NavItem key={s} to={`/setor/${encodeURIComponent(s)}`} icon={<span className="size-1.5 rounded-full bg-primary" />} label={s} />
-          ))}
+          {(() => {
+            const SISTEMAS: { nome: string; setores: string[] }[] = [
+              { nome: "GW-WEBTRANS", setores: ["Faturamento"] },
+              { nome: "GW-FROTA", setores: [] },
+              { nome: "GW-MOBILE", setores: [] },
+              { nome: "GW-LOGIS", setores: [] },
+              { nome: "A52", setores: [] },
+              { nome: "NGO", setores: [] },
+              { nome: "SOLIDES", setores: [] },
+              { nome: "BEE VALE", setores: [] },
+              { nome: "PROLOG", setores: [] },
+            ];
+            const usados = new Set(SISTEMAS.flatMap((s) => s.setores));
+            const outros = SETORES.filter((s) => !usados.has(s));
+            return (
+              <>
+                {SISTEMAS.map((sis) => (
+                  <div key={sis.nome}>
+                    <NavItem to={`/setor/${encodeURIComponent(sis.nome)}`} icon={<span className="size-1.5 rounded-full bg-accent" />} label={sis.nome} />
+                    {sis.setores.map((s) => (
+                      <NavLink key={s} to={`/setor/${encodeURIComponent(s)}`}
+                        className={({ isActive }) => cn(
+                          "flex items-center gap-2.5 pl-9 pr-3 py-1.5 rounded-md text-xs transition",
+                          isActive ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                        )}>
+                        <span className="size-1 rounded-full bg-primary" />
+                        <span className="truncate">{s}</span>
+                      </NavLink>
+                    ))}
+                  </div>
+                ))}
+                {outros.length > 0 && (
+                  <>
+                    <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
+                      <FolderTree className="size-3" /> Setores
+                    </div>
+                    {outros.map((s) => (
+                      <NavItem key={s} to={`/setor/${encodeURIComponent(s)}`} icon={<span className="size-1.5 rounded-full bg-primary" />} label={s} />
+                    ))}
+                  </>
+                )}
+              </>
+            );
+          })()}
         </nav>
         <div className="p-3 border-t border-border/60">
           <div className="text-xs text-muted-foreground truncate px-2 mb-2">{user?.email}</div>
