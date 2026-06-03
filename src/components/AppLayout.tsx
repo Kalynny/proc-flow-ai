@@ -26,7 +26,7 @@ export default function AppLayout() {
           <NavItem to="/" icon={<LayoutDashboard className="size-4" />} label="Dashboard" end />
           {canEdit && <NavItem to="/novo" icon={<Sparkles className="size-4" />} label="Novo c/ IA" />}
           <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
-            <FolderTree className="size-3" /> Setores
+            <FolderTree className="size-3" /> Sistemas
           </div>
           {SETORES.map((s) => (
             <NavItem key={s} to={`/setor/${encodeURIComponent(s)}`} icon={<span className="size-1.5 rounded-full bg-primary" />} label={s} />
