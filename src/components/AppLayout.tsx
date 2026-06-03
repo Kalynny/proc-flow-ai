@@ -29,34 +29,39 @@ export default function AppLayout() {
             <FolderTree className="size-3" /> Sistemas
           </div>
           {(() => {
-            const SISTEMAS: { nome: string; setores: string[] }[] = [
+            type SetorRef = string | { setor: string; label: string };
+            const SISTEMAS: { nome: string; setores: SetorRef[] }[] = [
               { nome: "GW-WEBTRANS", setores: ["Comercial", "Faturamento", "Financeiro", "Gerenciamento de Risco", "Operacional"] },
               { nome: "GW-FROTA", setores: ["Frota"] },
               { nome: "GW-MOBILE", setores: ["Mobile"] },
               { nome: "GW-LOGIS", setores: [] },
               { nome: "A52", setores: ["Monitoramento"] },
               { nome: "NGO", setores: ["Gerenciamento de Risco"] },
-              { nome: "SOLIDES", setores: ["RH"] },
+              { nome: "SOLIDES", setores: [{ setor: "RH", label: "Solides RH" }] },
               { nome: "BEE VALE", setores: ["RH"] },
               { nome: "PROLOG", setores: ["Aferição de Pneus", "Cheklist"] },
             ];
-            const usados = new Set(SISTEMAS.flatMap((s) => s.setores));
+            const norm = (r: SetorRef) => typeof r === "string" ? { setor: r, label: r } : r;
+            const usados = new Set(SISTEMAS.flatMap((s) => s.setores.map((r) => norm(r).setor)));
             const outros = SETORES.filter((s) => !usados.has(s));
             return (
               <>
                 {SISTEMAS.map((sis) => (
                   <div key={sis.nome}>
                     <NavItem to={`/setor/${encodeURIComponent(sis.nome)}`} icon={<span className="size-1.5 rounded-full bg-accent" />} label={sis.nome} />
-                    {sis.setores.map((s) => (
-                      <NavLink key={s} to={`/setor/${encodeURIComponent(s)}`}
-                        className={({ isActive }) => cn(
-                          "flex items-center gap-2.5 pl-9 pr-3 py-1.5 rounded-md text-xs transition",
-                          isActive ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-                        )}>
-                        <span className="size-1 rounded-full bg-primary" />
-                        <span className="truncate">{s}</span>
-                      </NavLink>
-                    ))}
+                    {sis.setores.map((r) => {
+                      const { setor, label } = norm(r);
+                      return (
+                        <NavLink key={label} to={`/setor/${encodeURIComponent(setor)}`}
+                          className={({ isActive }) => cn(
+                            "flex items-center gap-2.5 pl-9 pr-3 py-1.5 rounded-md text-xs transition",
+                            isActive ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                          )}>
+                          <span className="size-1 rounded-full bg-primary" />
+                          <span className="truncate">{label}</span>
+                        </NavLink>
+                      );
+                    })}
                   </div>
                 ))}
                 {outros.length > 0 && (
