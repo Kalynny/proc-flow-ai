@@ -8,7 +8,8 @@ import { DEPARTAMENTOS } from "@/lib/utils";
 export default function Login() {
   const nav = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [name, setName] = useState("");
+  const [email, setEmail] = useState(""); const [password, setPassword] = useState (""); const [name, setName] = useState("");
+  const [departamento, setDepartamento] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   async function submit(e: React.FormEvent) {
