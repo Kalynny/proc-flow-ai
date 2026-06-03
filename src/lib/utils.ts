@@ -24,7 +24,7 @@ export const SUBPASTAS: Partial<Record<Setor, string[]>> = {
   Financeiro: ["Cadastros", "Conc. Bancaria", "Contas a Pagar", "Contas a Receber", "Contrato de Frete"],
   Frota: ["Abastecimento", "Almoxarifado", "Checklist", "Compras", "Multas", "Ordens de Serviços", "Pneus"],
   Mobile: ["ADV", "Coleta", "Configurações", "CT-e", "Manifesto", "Romaneio"],
-  RH: ["Benefícios", "Jornada de Trabalho", "Palestras e Treinamento", "Recrutamento"],
+  "Solides RH": ["Benefícios", "Jornada de Trabalho", "Palestras e Treinamento", "Recrutamento"],
   TI: ["Gestão de Sistemas", "Inovação", "Integrações"],
 };
 
