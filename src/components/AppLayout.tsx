@@ -2,7 +2,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { SETORES, cn } from "@/lib/utils";
-import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, ChevronRight } from "lucide-react";
+import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, ChevronRight, Shield } from "lucide-react";
 
 export default function AppLayout() {
   const { signOut, user, role } = useAuth();
