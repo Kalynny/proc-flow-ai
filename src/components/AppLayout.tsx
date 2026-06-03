@@ -38,7 +38,7 @@ export default function AppLayout() {
               { nome: "A52", setores: ["Monitoramento"] },
               { nome: "NGO", setores: ["Gerenciamento de Risco"] },
               { nome: "SOLIDES", setores: [{ setor: "RH", label: "Solides RH" }] },
-              { nome: "BEE VALE", setores: ["RH"] },
+              { nome: "BEE VALE", setores: [{ setor: "RH", label: "Bee Vale RH" }] },
               { nome: "PROLOG", setores: ["Aferição de Pneus", "Cheklist"] },
             ];
             const norm = (r: SetorRef) => typeof r === "string" ? { setor: r, label: r } : r;
