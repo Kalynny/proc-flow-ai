@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Video, Folder } from "lucide-react";
-import { codigoNum, SUBPASTAS, type Setor } from "@/lib/utils";
+import { ArrowLeft, Video, Folder, Lock } from "lucide-react";
+import { codigoNum, SUBPASTAS, SISTEMAS, SISTEMA_NOMES, normSistemaRef, type Setor } from "@/lib/utils";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function SetorPage() {
   const { setor, subpasta } = useParams();
+  const { role, sistemas: allowed } = useAuth();
   const [items, setItems] = useState<any[]>([]);
   const setorName = setor ? decodeURIComponent(setor) : "";
   const subpastaName = subpasta ? decodeURIComponent(subpasta) : "";
   const subpastas = SUBPASTAS[setorName as Setor] ?? [];
+
+  const isAdmin = role === "admin";
+  const isSistemaRoute = SISTEMA_NOMES.includes(setorName);
+  const sistemasDoSetor = SISTEMAS.filter((s) => s.setores.some((r) => normSistemaRef(r).setor === setorName)).map((s) => s.nome);
+  const liberado = isAdmin
+    || (isSistemaRoute && allowed.includes(setorName))
+    || (!isSistemaRoute && sistemasDoSetor.some((n) => allowed.includes(n)));
 
   useEffect(() => { (async () => {
     if (!setor) return;
@@ -28,6 +37,18 @@ export default function SetorPage() {
 
   const subCounts: Record<string, number> = {};
   subpastas.forEach((s) => { subCounts[s] = items.filter((p) => p.subpasta === s).length; });
+
+  if (!liberado) {
+    return (
+      <div className="p-8">
+        <div className="glass rounded-xl p-8 text-center max-w-md mx-auto">
+          <Lock className="size-10 mx-auto text-muted-foreground mb-3" />
+          <h2 className="text-lg font-semibold mb-1">Acesso restrito</h2>
+          <p className="text-sm text-muted-foreground">Você não tem permissão para acessar este sistema. Solicite acesso ao administrador.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-10 max-w-[1400px] mx-auto">
