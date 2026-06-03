@@ -34,7 +34,7 @@ export default function AppLayout() {
               { nome: "GW-FROTA", setores: ["Frota"] },
               { nome: "GW-MOBILE", setores: ["Mobile"] },
               { nome: "GW-LOGIS", setores: [] },
-              { nome: "A52", setores: [] },
+              { nome: "A52", setores: ["Monitoramento"] },
               { nome: "NGO", setores: ["Gerenciamento de Risco"] },
               { nome: "SOLIDES", setores: [] },
               { nome: "BEE VALE", setores: [] },
