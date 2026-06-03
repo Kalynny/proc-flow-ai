@@ -29,13 +29,13 @@ export default function ProcedimentoPage() {
 
   async function excluir() {
     if (!id) return;
-    if (!confirm("Excluir este procedimento permanentemente? Esta ação não pode ser desfeita.")) return;
+    if (!confirm("Excluir este treinamento permanentemente? Esta ação não pode ser desfeita.")) return;
     setDeleting(true);
     try {
       await supabase.from("procedimento_versoes").delete().eq("procedimento_id", id);
       const { error } = await supabase.from("procedimentos").delete().eq("id", id);
       if (error) throw error;
-      toast.success("Procedimento excluído");
+      toast.success("Treinamento excluído");
       nav("/");
     } catch (e: any) { toast.error(e.message ?? "Falha ao excluir"); setDeleting(false); }
   }
@@ -77,7 +77,7 @@ export default function ProcedimentoPage() {
       const { data: novo, error } = await supabase
         .from("procedimentos").insert(payload).select("id").single();
       if (error) throw error;
-      toast.success("Procedimento clonado");
+      toast.success("Treinamento clonado");
       nav(`/procedimento/${novo.id}`);
     } catch (e: any) {
       toast.error(e.message ?? "Falha ao clonar");

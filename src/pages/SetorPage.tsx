@@ -38,7 +38,7 @@ export default function SetorPage() {
         Setor: {setorName}{subpastaName && <> <span className="opacity-60">/</span> {subpastaName}</>}
       </div>
       <h1 className="text-3xl font-bold">{subpastaName || setorName}</h1>
-      <p className="text-muted-foreground mt-1 mb-8">{visibleItems.length} procedimento(s){subpastaName ? " nesta subpasta" : " neste setor"}.</p>
+      <p className="text-muted-foreground mt-1 mb-8">{visibleItems.length} treinamento(s){subpastaName ? " nesta subpasta" : " neste setor"}.</p>
 
       {!subpastaName && subpastas.length > 0 && (
         <div className="mb-8">
@@ -50,7 +50,7 @@ export default function SetorPage() {
                 <div className="size-9 rounded-md bg-primary/15 grid place-items-center text-primary"><Folder className="size-4" /></div>
                 <div>
                   <div className="font-semibold group-hover:text-primary">{s}</div>
-                  <div className="text-xs text-muted-foreground">{subCounts[s] ?? 0} procedimento(s)</div>
+                  <div className="text-xs text-muted-foreground">{subCounts[s] ?? 0} treinamento(s)</div>
                 </div>
               </Link>
             ))}
@@ -69,7 +69,7 @@ export default function SetorPage() {
             {p.video_url && <div className="text-xs text-muted-foreground mt-2 flex items-center gap-1"><Video className="size-3" /> vídeo disponível</div>}
           </Link>
         ))}
-        {visibleItems.length === 0 && <div className="col-span-full text-muted-foreground text-center py-20">Nenhum procedimento {subpastaName ? "nesta subpasta" : "neste setor"}.</div>}
+        {visibleItems.length === 0 && <div className="col-span-full text-muted-foreground text-center py-20">Nenhum treinamento {subpastaName ? "nesta subpasta" : "neste setor"}.</div>}
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ export default function EditarProcedimento() {
       await supabase.from("procedimento_versoes").insert({
         procedimento_id: id!, versao: payload.versao, snapshot: payload, responsavel: payload.responsavel, created_by: user?.id,
       });
-      toast.success("Procedimento atualizado!");
+      toast.success("Treinamento atualizado!");
       nav(`/procedimento/${id}`);
     } catch (e: any) { toast.error(e.message ?? "Falha ao salvar"); }
     finally { setSaving(false); }
@@ -69,7 +69,7 @@ export default function EditarProcedimento() {
       <Link to={`/procedimento/${id}`} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4">
         <ArrowLeft className="size-4" /> Voltar
       </Link>
-      <h1 className="text-3xl font-bold mb-1">Editar procedimento</h1>
+      <h1 className="text-3xl font-bold mb-1">Editar treinamento</h1>
       <p className="text-muted-foreground mb-6">Altere os campos abaixo. Uma nova entrada de versão será registrada.</p>
 
       <div className="glass rounded-xl p-6 space-y-5">
