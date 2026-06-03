@@ -11,7 +11,7 @@ export function codigoNum(codigo: string): number {
 
 export const SETORES = [
   "Aferição de Pneus", "Bee Vale RH", "Cheklist", "Comercial", "Contrato de Frete", "Faturamento", "Financeiro", "Frota", "Gerenciamento de Risco",
-  "Mobile", "Monitoramento", "Nota Fiscal", "Operacional", "Ranking Motoristas", "RH", "Solides RH", "TI",
+  "Mobile", "Monitoramento", "Nota Fiscal", "Operacional", "Ranking Motoristas", "Solides RH",
 ] as const;
 export type Setor = (typeof SETORES)[number];
 
@@ -31,7 +31,7 @@ export const SUBPASTAS: Partial<Record<Setor, string[]>> = {
   "Contrato de Frete": ["Benefícios", "Jornada de Trabalho", "Palestras e Treinamento", "Recrutamento"],
   "Nota Fiscal": ["Benefícios", "Jornada de Trabalho", "Palestras e Treinamento", "Recrutamento"],
   "Ranking Motoristas": ["Benefícios", "Jornada de Trabalho", "Palestras e Treinamento", "Recrutamento"],
-  TI: ["Gestão de Sistemas", "Inovação", "Integrações"],
+  
 };
 
 export function youtubeEmbed(url?: string | null): string | null {
