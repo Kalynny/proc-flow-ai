@@ -36,8 +36,8 @@ export default function AppLayout() {
               { nome: "GW-LOGIS", setores: [] },
               { nome: "A52", setores: ["Monitoramento"] },
               { nome: "NGO", setores: ["Gerenciamento de Risco"] },
-              { nome: "SOLIDES", setores: [] },
-              { nome: "BEE VALE", setores: [] },
+              { nome: "SOLIDES", setores: ["RH"] },
+              { nome: "BEE VALE", setores: ["RH"] },
               { nome: "PROLOG", setores: [] },
             ];
             const usados = new Set(SISTEMAS.flatMap((s) => s.setores));
