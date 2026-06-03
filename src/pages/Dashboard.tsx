@@ -44,7 +44,7 @@ export default function Dashboard() {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="text-xs uppercase tracking-wider text-primary mb-1">Visão geral</div>
-          <h1 className="text-3xl font-bold">Painel do Conhecimento</h1>
+          <h1 className="text-3xl font-bold">Painel de Conhecimento dos Sistemas</h1>
           <p className="text-muted-foreground mt-1">Base de Conhecimento, Treinamentos Escritos e Áudios Visuais.</p>
         </div>
         {(role === "admin" || role === "editor") && (
