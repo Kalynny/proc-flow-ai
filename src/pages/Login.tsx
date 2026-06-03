@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Truck, Mail, Lock, Loader2 } from "lucide-react";
+import { Truck, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const nav = useNavigate();
