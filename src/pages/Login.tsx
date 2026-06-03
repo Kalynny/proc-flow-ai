@@ -120,3 +120,18 @@ function Field({ icon, type = "text", placeholder, value, onChange }:
     </div>
   );
 }
+
+function PasswordField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"><Lock className="size-4" /></span>
+      <input type={show ? "text" : "password"} required placeholder="Senha" value={value} onChange={(e) => onChange(e.target.value)}
+        className="w-full bg-background/60 border border-border rounded-md py-2.5 pl-9 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+      <button type="button" onClick={() => setShow((s) => !s)} aria-label={show ? "Ocultar senha" : "Mostrar senha"}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+        {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+      </button>
+    </div>
+  );
+}
