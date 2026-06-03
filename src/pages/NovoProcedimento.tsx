@@ -27,7 +27,7 @@ export default function NovoProcedimento() {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setDraft({ ...data, setor, subpasta: subpasta || null, video_url: videoUrl || null, google_drive_url: googleDriveUrl || null });
-      toast.success("Procedimento gerado! Revise e salve.");
+      toast.success("Treinamento gerado! Revise e salve.");
     } catch (e: any) {
       toast.error(e.message ?? "Falha ao gerar");
     } finally { setGenerating(false); }
@@ -59,7 +59,7 @@ export default function NovoProcedimento() {
       await supabase.from("procedimento_versoes").insert({
         procedimento_id: data.id, versao: data.versao, snapshot: payload, responsavel: payload.responsavel, created_by: user?.id,
       });
-      toast.success("Procedimento salvo!");
+      toast.success("Treinamento salvo!");
       nav(`/procedimento/${data.id}`);
     } catch (e: any) { toast.error(e.message ?? "Falha ao salvar"); }
     finally { setSaving(false); }
@@ -68,7 +68,7 @@ export default function NovoProcedimento() {
   return (
     <div className="p-6 lg:p-10 max-w-[1100px] mx-auto">
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4"><ArrowLeft className="size-4" /> Voltar</Link>
-      <h1 className="text-3xl font-bold mb-1">Novo procedimento com IA</h1>
+      <h1 className="text-3xl font-bold mb-1">Novo treinamento com IA</h1>
       <p className="text-muted-foreground mb-8">Cole transcrição, descrição ou passo a passo bruto. A IA estrutura e padroniza automaticamente.</p>
 
       <div className="grid lg:grid-cols-2 gap-6">
@@ -118,7 +118,7 @@ export default function NovoProcedimento() {
           {!draft ? (
             <div className="text-sm text-muted-foreground text-center py-20 border border-dashed border-border rounded-md">
               <Sparkles className="size-6 mx-auto mb-2 opacity-50" />
-              O procedimento estruturado aparecerá aqui.
+              O treinamento estruturado aparecerá aqui.
             </div>
           ) : (
             <div className="space-y-4 text-sm">
@@ -153,7 +153,7 @@ export default function NovoProcedimento() {
               )}
               <button onClick={salvar} disabled={saving}
                 className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-md font-medium hover:bg-primary/90 transition disabled:opacity-60">
-                {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />} Salvar procedimento
+                {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />} Salvar treinamento
               </button>
             </div>
           )}

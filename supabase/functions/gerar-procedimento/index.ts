@@ -4,8 +4,8 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const SYSTEM = `Você é uma IA especializada em criação de procedimentos operacionais para transportadoras.
-Receba um conteúdo bruto (transcrição, descrição ou passo a passo) e gere um procedimento operacional padronizado, profissional e claro, em português do Brasil.
+const SYSTEM = `Você é uma IA especializada em criação de treinamentos operacionais para transportadoras.
+Receba um conteúdo bruto (transcrição, descrição ou passo a passo) e gere um treinamento operacional padronizado, profissional e claro, em português do Brasil.
 Responda APENAS com JSON válido (sem markdown, sem comentários) no formato:
 {
   "codigo": "POP-XXX-001",
@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
       const start = cleaned.search(/[\{\[]/);
       const end = Math.max(cleaned.lastIndexOf("}"), cleaned.lastIndexOf("]"));
       try { parsed = JSON.parse(cleaned.substring(start, end + 1)); }
-      catch { parsed = { titulo: "Procedimento", passo_a_passo: [content] }; }
+      catch { parsed = { titulo: "Treinamento", passo_a_passo: [content] }; }
     }
 
     return new Response(JSON.stringify(parsed), { headers: { ...corsHeaders, "Content-Type": "application/json" } });

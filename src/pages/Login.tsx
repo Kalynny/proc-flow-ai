@@ -47,7 +47,7 @@ export default function Login() {
           <div className="font-bold text-lg">Portal de Conhecimento</div>
         </div>
         <div className="relative">
-          <h1 className="text-4xl font-bold leading-tight mb-4">Procedimentos<br/><span className="text-primary">automatizados por IA</span></h1>
+          <h1 className="text-4xl font-bold leading-tight mb-4">Treinamentos<br/><span className="text-primary">automatizados por IA</span></h1>
           <p className="text-muted-foreground max-w-md">Vídeos, PDFs e QR Codes gerados automaticamente. Treinamento padronizado para toda a operação da transportadora.</p>
         </div>
         <div className="relative text-xs text-muted-foreground">© Portal de Conhecimento</div>

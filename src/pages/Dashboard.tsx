@@ -72,7 +72,7 @@ export default function Dashboard() {
         {filtered.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <Sparkles className="size-8 mx-auto mb-3 opacity-50" />
-            Nenhum procedimento ainda. {role !== "viewer" && <Link to="/novo" className="text-primary underline">Crie o primeiro com IA</Link>}.
+            Nenhum treinamento ainda. {role !== "viewer" && <Link to="/novo" className="text-primary underline">Crie o primeiro com IA</Link>}.
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -98,7 +98,7 @@ export default function Dashboard() {
           <Link key={s} to={`/setor/${encodeURIComponent(s)}`} className="glass rounded-lg p-4 hover:border-primary/50 transition group">
             <div className="text-xs text-muted-foreground">Setor</div>
             <div className="font-semibold mt-1 group-hover:text-primary">{s}</div>
-            <div className="text-xs text-muted-foreground mt-2">{bySetor[s] ?? 0} procedimento(s)</div>
+            <div className="text-xs text-muted-foreground mt-2">{bySetor[s] ?? 0} treinamento(s)</div>
           </Link>
         ))}
       </div>
