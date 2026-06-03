@@ -30,7 +30,7 @@ export default function AppLayout() {
           </div>
           {(() => {
             const SISTEMAS: { nome: string; setores: string[] }[] = [
-              { nome: "GW-WEBTRANS", setores: ["Faturamento", "Financeiro", "Operacional"] },
+              { nome: "GW-WEBTRANS", setores: ["Comercial", "Faturamento", "Financeiro", "Operacional"] },
               { nome: "GW-FROTA", setores: [] },
               { nome: "GW-MOBILE", setores: [] },
               { nome: "GW-LOGIS", setores: [] },
