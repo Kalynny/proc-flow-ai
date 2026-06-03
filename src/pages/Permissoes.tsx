@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
-import { DEPARTAMENTOS, SETORES } from "@/lib/utils";
+import { DEPARTAMENTOS, SISTEMA_NOMES } from "@/lib/utils";
 import { toast } from "sonner";
 import { Shield, Loader2, Check } from "lucide-react";
 
@@ -164,7 +164,7 @@ export default function Permissoes() {
                     </button>
                     {openId === u.id && (
                       <div className="absolute z-20 mt-2 w-72 max-h-72 overflow-auto glass rounded-lg border border-border shadow-xl p-2">
-                        {SETORES.map((s) => {
+                        {SISTEMA_NOMES.map((s) => {
                           const checked = u.sistemas.includes(s);
                           return (
                             <label key={s} className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-muted/50 cursor-pointer text-sm">

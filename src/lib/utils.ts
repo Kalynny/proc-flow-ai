@@ -20,6 +20,23 @@ export const DEPARTAMENTOS = [
 export type Departamento = (typeof DEPARTAMENTOS)[number];
 export type Setor = (typeof SETORES)[number];
 
+export type SistemaRef = string | { setor: string; label: string };
+export const SISTEMAS: { nome: string; setores: SistemaRef[] }[] = [
+  { nome: "GW-WEBTRANS", setores: ["Comercial", "Contrato de Frete", "Faturamento", "Financeiro", "Gerenciamento de Risco", "Operacional"] },
+  { nome: "GW-FROTA", setores: ["Frota"] },
+  { nome: "GW-MOBILE", setores: ["Mobile"] },
+  { nome: "GW-LOGIS", setores: ["Nota Fiscal"] },
+  { nome: "A52", setores: ["Monitoramento"] },
+  { nome: "NGO", setores: ["Gerenciamento de Risco"] },
+  { nome: "SOLIDES", setores: ["Solides RH"] },
+  { nome: "BEE VALE", setores: ["Bee Vale RH"] },
+  { nome: "PROLOG", setores: ["Aferição de Pneus", "Cheklist"] },
+  { nome: "GAME TRUCK", setores: ["Ranking Motoristas"] },
+  { nome: "TRUCK DIGITAL", setores: ["Contrato de Frete"] },
+];
+export const SISTEMA_NOMES = SISTEMAS.map((s) => s.nome);
+export const normSistemaRef = (r: SistemaRef) => typeof r === "string" ? { setor: r, label: r } : r;
+
 export const SUBPASTAS: Partial<Record<Setor, string[]>> = {
   Comercial: ["Alinhamento Operacional", "Cotação de Frete", "Prospecção de Clientes"],
   Operacional: ["ADV", "Coleta", "Contrato de Frete", "CT-e", "Manifesto", "Romaneio"],
