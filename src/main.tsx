@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { AuthProvider, RequireAuth } from "@/components/AuthProvider";
 import AppLayout from "@/components/AppLayout";
 import Login from "@/pages/Login";
+import ResetPassword from "@/pages/ResetPassword";
 import Dashboard from "@/pages/Dashboard";
 import SetorPage from "@/pages/SetorPage";
 import ProcedimentoPage from "@/pages/ProcedimentoPage";
@@ -25,6 +26,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Toaster theme="dark" position="top-right" richColors />
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/setor/:setor" element={<SetorPage />} />

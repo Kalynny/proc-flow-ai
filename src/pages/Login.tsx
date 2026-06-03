@@ -41,6 +41,17 @@ export default function Login() {
     if (error) { toast.error(error.message); setLoading(false); }
   }
 
+  async function forgotPassword() {
+    if (!email) { toast.error("Digite seu email primeiro"); return; }
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setLoading(false);
+    if (error) toast.error(error.message);
+    else toast.success("Email de redefinição enviado! Verifique sua caixa de entrada.");
+  }
+
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       <div className="hidden lg:flex relative grid-bg bg-card/30 p-12 flex-col justify-between overflow-hidden">
@@ -103,6 +114,13 @@ export default function Login() {
             className="w-full text-sm text-muted-foreground hover:text-foreground">
             {mode === "signin" ? "Não tem conta? Criar agora" : "Já tem conta? Entrar"}
           </button>
+
+          {mode === "signin" && (
+            <button type="button" onClick={forgotPassword} disabled={loading}
+              className="w-full text-xs text-muted-foreground hover:text-primary">
+              Esqueci minha senha
+            </button>
+          )}
         </form>
       </div>
     </div>
