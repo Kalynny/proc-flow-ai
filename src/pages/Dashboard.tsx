@@ -10,6 +10,7 @@ type Proc = { id: string; codigo: string; titulo: string; setor: string; video_u
 
 export default function Dashboard() {
   const { role } = useAuth();
+  const { setorNomes: SETORES } = useSistemasData();
   const [items, setItems] = useState<Proc[]>([]); const [q, setQ] = useState("");
 
   useEffect(() => { (async () => {
