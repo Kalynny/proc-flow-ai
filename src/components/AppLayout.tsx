@@ -7,7 +7,7 @@ import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, Chevr
 
 export default function AppLayout() {
   const { signOut, user, role, sistemas: allowed } = useAuth();
-  const { sistemas: SISTEMAS, setorNomes: SETORES } = useSistemasData();
+  const { sistemas: sistemasAll, setorNomes } = useSistemasData();
   const nav = useNavigate();
   const location = useLocation();
   const canEdit = role === "admin" || role === "editor";
