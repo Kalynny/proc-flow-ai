@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
-import { DEPARTAMENTOS, SISTEMA_NOMES } from "@/lib/utils";
+import { DEPARTAMENTOS } from "@/lib/utils";
+import { useSistemasData } from "@/lib/sistemas";
 import { toast } from "sonner";
 import { Shield, Loader2, Check, KeyRound, X, Eye, EyeOff } from "lucide-react";
 
