@@ -35,6 +35,64 @@ export const SISTEMAS: { nome: string; setores: SistemaRef[] }[] = [
   { nome: "TRUCK DIGITAL", setores: ["Contrato de Frete"] },
 ];
 export const SISTEMA_NOMES = SISTEMAS.map((s) => s.nome);
+
+export const SISTEMA_INFO: Record<string, { descricao: string; finalidade: string; modulos: string[] }> = {
+  "GW-WEBTRANS": {
+    descricao: "Sistema principal de gestão de transporte rodoviário de cargas da GKO/Senior, responsável por toda a operação administrativa e financeira da transportadora.",
+    finalidade: "Centralizar emissão de documentos fiscais (CT-e, MDF-e), contratos de frete, faturamento, contas a pagar/receber e gestão comercial.",
+    modulos: ["Comercial", "Contrato de Frete", "Faturamento", "Financeiro", "Gerenciamento de Risco", "Operacional"],
+  },
+  "GW-FROTA": {
+    descricao: "Módulo de gestão de frota integrado ao GW, voltado para o controle completo dos veículos e custos de manutenção.",
+    finalidade: "Controlar abastecimento, almoxarifado, pneus, ordens de serviço, multas, checklist e compras relacionadas à frota.",
+    modulos: ["Frota"],
+  },
+  "GW-MOBILE": {
+    descricao: "Aplicativo mobile utilizado pelos motoristas para registro de eventos de viagem em tempo real.",
+    finalidade: "Permitir que motoristas registrem coletas, entregas, ocorrências (ADV), CT-e, manifestos e romaneios direto do celular.",
+    modulos: ["Mobile"],
+  },
+  "GW-LOGIS": {
+    descricao: "Módulo logístico do GW para tratamento de notas fiscais e integração com clientes.",
+    finalidade: "Receber, validar e processar notas fiscais eletrônicas para emissão de documentos de transporte.",
+    modulos: ["Nota Fiscal"],
+  },
+  "A52": {
+    descricao: "Sistema de monitoramento e rastreamento veicular utilizado pelo time de monitoramento.",
+    finalidade: "Acompanhar em tempo real a localização das cargas, status de viagens e segurança operacional.",
+    modulos: ["Monitoramento"],
+  },
+  "NGO": {
+    descricao: "Sistema de gerenciamento de risco e gestão de seguros.",
+    finalidade: "Avaliar perfil de motoristas, consultar histórico, gerenciar apólices e mitigar riscos operacionais.",
+    modulos: ["Gerenciamento de Risco"],
+  },
+  "SOLIDES": {
+    descricao: "Plataforma de gestão de pessoas e RH analítico utilizada para processos seletivos e gestão comportamental.",
+    finalidade: "Realizar recrutamento, avaliações de perfil, gestão de benefícios, treinamentos e jornada de trabalho.",
+    modulos: ["Solides RH"],
+  },
+  "BEE VALE": {
+    descricao: "Plataforma de benefícios corporativos (vale-alimentação, refeição e demais benefícios).",
+    finalidade: "Gerenciar cartões de benefícios, recargas e relatórios de utilização pelos colaboradores.",
+    modulos: ["Bee Vale RH"],
+  },
+  "PROLOG": {
+    descricao: "Sistema de gestão operacional voltado para controle de pneus e checklist de veículos.",
+    finalidade: "Realizar aferição de pneus, controle de vida útil, registro de checklist diário e indicadores operacionais.",
+    modulos: ["Aferição de Pneus", "Cheklist"],
+  },
+  "GAME TRUCK": {
+    descricao: "Plataforma de gamificação para motoristas baseada em indicadores de performance.",
+    finalidade: "Ranquear motoristas por desempenho, segurança e produtividade, incentivando boas práticas.",
+    modulos: ["Ranking Motoristas"],
+  },
+  "TRUCK DIGITAL": {
+    descricao: "Plataforma digital para gestão de contratos de frete eletrônicos.",
+    finalidade: "Formalizar, assinar digitalmente e acompanhar contratos de frete com agregados e terceiros.",
+    modulos: ["Contrato de Frete"],
+  },
+};
 export const normSistemaRef = (r: SistemaRef) => typeof r === "string" ? { setor: r, label: r } : r;
 
 export const SUBPASTAS: Partial<Record<Setor, string[]>> = {
