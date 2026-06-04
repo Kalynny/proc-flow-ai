@@ -8,7 +8,8 @@ import { Link } from "react-router-dom";
 
 export default function NovoProcedimento() {
   const nav = useNavigate();
-  const [setor, setSetor] = useState<Setor>("Gerenciamento de Risco");
+  const { setorNomes: SETORES, subpastas: SUBPASTAS } = useSistemasData();
+  const [setor, setSetor] = useState<Setor>(SETORES[0] ?? "");
   const [subpasta, setSubpasta] = useState<string>("");
   const [conteudo, setConteudo] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
