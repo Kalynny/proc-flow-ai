@@ -40,12 +40,21 @@ export function SistemasProvider({ children }: { children: ReactNode }) {
   const [subpastasMap, setSubpastasMap] = useState<Record<string, string[]>>({});
 
   const load = useCallback(async () => {
-    const [{ data: sets }, { data: sis }, { data: ss }, { data: subs }] = await Promise.all([
+    setLoading(true);
+    const [{ data: sets, error: setsError }, { data: sis, error: sisError }, { data: ss, error: ssError }, { data: subs, error: subsError }] = await Promise.all([
       supabase.from("setores" as any).select("*").order("ordem").order("nome"),
       supabase.from("sistemas" as any).select("*").order("nome"),
       supabase.from("sistema_setores" as any).select("*").order("ordem"),
       supabase.from("subpastas" as any).select("*").order("ordem").order("nome"),
     ]);
+    if (setsError || sisError || ssError || subsError) {
+      console.error("Falha ao carregar sistemas", setsError || sisError || ssError || subsError);
+      setSetores([]);
+      setSistemas([]);
+      setSubpastasMap({});
+      setLoading(false);
+      return;
+    }
     const setoresArr = ((sets ?? []) as unknown) as SetorRow[];
     const sistemasArr = ((sis ?? []) as unknown) as any[];
     const linksArr = ((ss ?? []) as unknown) as any[];
@@ -69,7 +78,7 @@ export function SistemasProvider({ children }: { children: ReactNode }) {
           return { setor, label: l.label || setor };
         })
         .filter((r) => r.setor),
-    }));
+    })).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" }));
 
     const subMap: Record<string, string[]> = {};
     subsArr.forEach((sp) => {
@@ -78,7 +87,7 @@ export function SistemasProvider({ children }: { children: ReactNode }) {
       (subMap[sr.nome] ||= []).push(sp.nome);
     });
 
-    setSetores(setoresArr);
+    setSetores(setoresArr.slice().sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" })));
     setSistemas(built);
     setSubpastasMap(subMap);
     setLoading(false);
