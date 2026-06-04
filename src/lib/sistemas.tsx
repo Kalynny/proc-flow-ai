@@ -40,48 +40,59 @@ export function SistemasProvider({ children }: { children: ReactNode }) {
   const [subpastasMap, setSubpastasMap] = useState<Record<string, string[]>>({});
 
   const load = useCallback(async () => {
-    const [{ data: sets }, { data: sis }, { data: ss }, { data: subs }] = await Promise.all([
-      supabase.from("setores" as any).select("*").order("ordem").order("nome"),
-      supabase.from("sistemas" as any).select("*").order("ordem").order("nome"),
-      supabase.from("sistema_setores" as any).select("*").order("ordem"),
-      supabase.from("subpastas" as any).select("*").order("ordem").order("nome"),
-    ]);
-    const setoresArr = ((sets ?? []) as unknown) as SetorRow[];
-    const sistemasArr = ((sis ?? []) as unknown) as any[];
-    const linksArr = ((ss ?? []) as unknown) as any[];
-    const subsArr = ((subs ?? []) as unknown) as SubpastaRow[];
+    try {
+      const [setsRes, sisRes, ssRes, subsRes] = await Promise.all([
+        supabase.from("setores" as any).select("*").order("ordem").order("nome"),
+        supabase.from("sistemas" as any).select("*").order("ordem").order("nome"),
+        supabase.from("sistema_setores" as any).select("*").order("ordem"),
+        supabase.from("subpastas" as any).select("*").order("ordem").order("nome"),
+      ]);
+      if (setsRes.error) console.error("[sistemas] setores:", setsRes.error);
+      if (sisRes.error) console.error("[sistemas] sistemas:", sisRes.error);
+      if (ssRes.error) console.error("[sistemas] sistema_setores:", ssRes.error);
+      if (subsRes.error) console.error("[sistemas] subpastas:", subsRes.error);
 
-    const setorById: Record<string, SetorRow> = {};
-    setoresArr.forEach((s) => { setorById[s.id] = s; });
+      const setoresArr = ((setsRes.data ?? []) as unknown) as SetorRow[];
+      const sistemasArr = ((sisRes.data ?? []) as unknown) as any[];
+      const linksArr = ((ssRes.data ?? []) as unknown) as any[];
+      const subsArr = ((subsRes.data ?? []) as unknown) as SubpastaRow[];
 
-    const built: Sistema[] = sistemasArr.map((s) => ({
-      id: s.id,
-      nome: s.nome,
-      descricao: s.descricao,
-      finalidade: s.finalidade,
-      ordem: s.ordem,
-      setores: linksArr
-        .filter((l) => l.sistema_id === s.id)
-        .sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))
-        .map((l) => {
-          const sr = setorById[l.setor_id];
-          const setor = sr?.nome ?? "";
-          return { setor, label: l.label || setor };
-        })
-        .filter((r) => r.setor),
-    }));
+      const setorById: Record<string, SetorRow> = {};
+      setoresArr.forEach((s) => { setorById[s.id] = s; });
 
-    const subMap: Record<string, string[]> = {};
-    subsArr.forEach((sp) => {
-      const sr = setorById[sp.setor_id];
-      if (!sr) return;
-      (subMap[sr.nome] ||= []).push(sp.nome);
-    });
+      const built: Sistema[] = sistemasArr.map((s) => ({
+        id: s.id,
+        nome: s.nome,
+        descricao: s.descricao,
+        finalidade: s.finalidade,
+        ordem: s.ordem,
+        setores: linksArr
+          .filter((l) => l.sistema_id === s.id)
+          .sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))
+          .map((l) => {
+            const sr = setorById[l.setor_id];
+            const setor = sr?.nome ?? "";
+            return { setor, label: l.label || setor };
+          })
+          .filter((r) => r.setor),
+      }));
 
-    setSetores(setoresArr);
-    setSistemas(built);
-    setSubpastasMap(subMap);
-    setLoading(false);
+      const subMap: Record<string, string[]> = {};
+      subsArr.forEach((sp) => {
+        const sr = setorById[sp.setor_id];
+        if (!sr) return;
+        (subMap[sr.nome] ||= []).push(sp.nome);
+      });
+
+      setSetores(setoresArr);
+      setSistemas(built);
+      setSubpastasMap(subMap);
+      console.log("[sistemas] loaded", { setores: setoresArr.length, sistemas: built.length, subpastas: Object.keys(subMap).length });
+    } catch (e) {
+      console.error("[sistemas] load error", e);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);
