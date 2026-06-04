@@ -10,7 +10,7 @@ const inp = "w-full bg-background/60 border border-border rounded-md py-2 px-3 t
 
 export default function AdminSistemas() {
   const { role, loading: authLoading } = useAuth();
-  const { sistemas, setores, subpastas: subMap, setorByName, reload, loading } = useSistemasData();
+  const { sistemas, setores, setorByName, reload, loading } = useSistemasData();
   const [tab, setTab] = useState<"sistemas" | "setores" | "subpastas">("sistemas");
 
   if (authLoading || loading) return <div className="p-10 text-muted-foreground">Carregando…</div>;
