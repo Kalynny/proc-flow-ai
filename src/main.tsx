@@ -25,22 +25,25 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={qc}>
       <BrowserRouter>
         <AuthProvider>
-          <Toaster theme="dark" position="top-right" richColors />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/setor/:setor" element={<SetorPage />} />
-              <Route path="/setor/:setor/:subpasta" element={<SetorPage />} />
-              <Route path="/procedimento/:id" element={<ProcedimentoPage />} />
-              <Route path="/novo" element={<NovoProcedimento />} />
-              <Route path="/procedimento/:id/editar" element={<EditarProcedimento />} />
-              <Route path="/permissoes" element={<Permissoes />} />
-              <Route path="/treinamentos" element={<Treinamentos />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <SistemasProvider>
+            <Toaster theme="dark" position="top-right" richColors />
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/setor/:setor" element={<SetorPage />} />
+                <Route path="/setor/:setor/:subpasta" element={<SetorPage />} />
+                <Route path="/procedimento/:id" element={<ProcedimentoPage />} />
+                <Route path="/novo" element={<NovoProcedimento />} />
+                <Route path="/procedimento/:id/editar" element={<EditarProcedimento />} />
+                <Route path="/permissoes" element={<Permissoes />} />
+                <Route path="/treinamentos" element={<Treinamentos />} />
+                <Route path="/admin/sistemas" element={<AdminSistemas />} />
+              </Route>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </SistemasProvider>
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
