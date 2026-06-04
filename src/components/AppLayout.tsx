@@ -7,7 +7,7 @@ import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, Chevr
 
 export default function AppLayout() {
   const { signOut, user, role, sistemas: allowed } = useAuth();
-  const { sistemas: SISTEMAS, setorNomes: SETORES } = useSistemasData();
+  const { sistemas: sistemasAll, setorNomes } = useSistemasData();
   const nav = useNavigate();
   const location = useLocation();
   const canEdit = role === "admin" || role === "editor";
@@ -38,10 +38,10 @@ export default function AppLayout() {
             <FolderTree className="size-3" /> Sistemas
           </div>
           {(() => {
-            const visiveis = isAdmin ? SISTEMAS : SISTEMAS.filter((s) => allowed.includes(s.nome));
+            const visiveis = isAdmin ? sistemasAll : sistemasAll.filter((s) => allowed.includes(s.nome));
             const setoresLiberados = new Set(visiveis.flatMap((s) => s.setores.map((r) => normSistemaRef(r).setor)));
-            const usados = new Set(SISTEMAS.flatMap((s) => s.setores.map((r) => normSistemaRef(r).setor)));
-            const outros = isAdmin ? SETORES.filter((s) => !usados.has(s)) : [];
+            const usados = new Set(sistemasAll.flatMap((s) => s.setores.map((r) => normSistemaRef(r).setor)));
+            const outros = isAdmin ? setorNomes.filter((s) => !usados.has(s)) : [];
             const currentPath = decodeURIComponent(location.pathname);
             return (
               <>
