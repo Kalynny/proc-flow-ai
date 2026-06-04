@@ -42,7 +42,7 @@ export function SistemasProvider({ children }: { children: ReactNode }) {
   const load = useCallback(async () => {
     const [{ data: sets }, { data: sis }, { data: ss }, { data: subs }] = await Promise.all([
       supabase.from("setores" as any).select("*").order("ordem").order("nome"),
-      supabase.from("sistemas" as any).select("*").order("ordem").order("nome"),
+      supabase.from("sistemas" as any).select("*").order("nome"),
       supabase.from("sistema_setores" as any).select("*").order("ordem"),
       supabase.from("subpastas" as any).select("*").order("ordem").order("nome"),
     ]);
