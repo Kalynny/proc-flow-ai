@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { SETORES, SUBPASTAS, type Setor } from "@/lib/utils";
+import { useSistemasData, type Setor } from "@/lib/sistemas";
 import { toast } from "sonner";
 import { Sparkles, Loader2, Save, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function NovoProcedimento() {
   const nav = useNavigate();
-  const [setor, setSetor] = useState<Setor>("Gerenciamento de Risco");
+  const { setorNomes: SETORES, subpastas: SUBPASTAS } = useSistemasData();
+  const [setor, setSetor] = useState<Setor>(SETORES[0] ?? "");
   const [subpasta, setSubpasta] = useState<string>("");
   const [conteudo, setConteudo] = useState("");
   const [videoUrl, setVideoUrl] = useState("");

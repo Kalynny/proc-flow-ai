@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { SETORES, SUBPASTAS, type Setor } from "@/lib/utils";
+import { useSistemasData, type Setor } from "@/lib/sistemas";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, Save, Plus, Trash2 } from "lucide-react";
@@ -10,6 +10,7 @@ export default function EditarProcedimento() {
   const { id } = useParams();
   const nav = useNavigate();
   const { role, user } = useAuth();
+  const { setorNomes: SETORES, subpastas: SUBPASTAS } = useSistemasData();
   const [p, setP] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

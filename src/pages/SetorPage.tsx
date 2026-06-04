@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Video, Folder, Lock, Info, Target, Layers } from "lucide-react";
-import { codigoNum, SUBPASTAS, SISTEMAS, SISTEMA_NOMES, SISTEMA_INFO, normSistemaRef, type Setor } from "@/lib/utils";
+import { codigoNum } from "@/lib/utils";
+import { useSistemasData, normSistemaRef, type Setor } from "@/lib/sistemas";
 import { useAuth } from "@/components/AuthProvider";
 
 export default function SetorPage() {
   const { setor, subpasta } = useParams();
   const { role, sistemas: allowed } = useAuth();
+  const { sistemas: SISTEMAS, sistemaNomes: SISTEMA_NOMES, sistemaInfo: SISTEMA_INFO, subpastas: SUBPASTAS } = useSistemasData();
   const [items, setItems] = useState<any[]>([]);
   const setorName = setor ? decodeURIComponent(setor) : "";
   const subpastaName = subpasta ? decodeURIComponent(subpasta) : "";
-  const subpastas = SUBPASTAS[setorName as Setor] ?? [];
+  const subpastas = SUBPASTAS[setorName] ?? [];
 
   const isAdmin = role === "admin";
   const isSistemaRoute = SISTEMA_NOMES.includes(setorName);

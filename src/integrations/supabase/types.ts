@@ -66,7 +66,7 @@ export type Database = {
           problemas_comuns: Json
           qr_code_url: string | null
           responsavel: string | null
-          setor: Database["public"]["Enums"]["setor_enum"]
+          setor: string
           sistemas: string | null
           subpasta: string | null
           titulo: string
@@ -87,7 +87,7 @@ export type Database = {
           problemas_comuns?: Json
           qr_code_url?: string | null
           responsavel?: string | null
-          setor: Database["public"]["Enums"]["setor_enum"]
+          setor: string
           sistemas?: string | null
           subpasta?: string | null
           titulo: string
@@ -108,7 +108,7 @@ export type Database = {
           problemas_comuns?: Json
           qr_code_url?: string | null
           responsavel?: string | null
-          setor?: Database["public"]["Enums"]["setor_enum"]
+          setor?: string
           sistemas?: string | null
           subpasta?: string | null
           titulo?: string
@@ -141,6 +141,137 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      setores: {
+        Row: {
+          created_at: string
+          departamento: string | null
+          id: string
+          nome: string
+          ordem: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          departamento?: string | null
+          id?: string
+          nome: string
+          ordem?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          departamento?: string | null
+          id?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sistema_setores: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          ordem: number
+          setor_id: string
+          sistema_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          ordem?: number
+          setor_id: string
+          sistema_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          ordem?: number
+          setor_id?: string
+          sistema_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sistema_setores_setor_id_fkey"
+            columns: ["setor_id"]
+            isOneToOne: false
+            referencedRelation: "setores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sistema_setores_sistema_id_fkey"
+            columns: ["sistema_id"]
+            isOneToOne: false
+            referencedRelation: "sistemas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sistemas: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          finalidade: string | null
+          id: string
+          nome: string
+          ordem: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          finalidade?: string | null
+          id?: string
+          nome: string
+          ordem?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          finalidade?: string | null
+          id?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subpastas: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+          setor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+          setor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          setor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subpastas_setor_id_fkey"
+            columns: ["setor_id"]
+            isOneToOne: false
+            referencedRelation: "setores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
