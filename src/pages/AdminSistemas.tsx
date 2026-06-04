@@ -159,10 +159,12 @@ function SetoresTab({ setores, reload }: { setores: SetorRow[]; reload: () => Pr
   const [editing, setEditing] = useState<SetorRow | null>(null);
 
   async function criar() {
-    if (!novo.trim()) return;
-    const { error } = await supabase.from("setores" as any).insert({ nome: novo.trim(), ordem: novoOrdem });
+    const nome = novo.trim();
+    if (!nome) { toast.error("Informe o nome do setor"); return; }
+    const ordem = novoOrdem || (setores.length + 1) * 10;
+    const { error } = await supabase.from("setores" as any).insert({ nome, ordem });
     if (error) { toast.error(error.message); return; }
-    setNovo(""); setNovoOrdem(0); toast.success("Criado"); reload();
+    setNovo(""); setNovoOrdem(0); toast.success("Setor criado"); await reload();
   }
 
   return (
