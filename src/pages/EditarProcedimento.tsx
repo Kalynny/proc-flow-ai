@@ -91,7 +91,7 @@ export default function EditarProcedimento() {
           <Field label="Sub-pasta">
             <select value={p.subpasta ?? ""} onChange={(e) => update("subpasta", e.target.value || null)} className={inp}>
               <option value="">— Sem sub-pasta —</option>
-              {subpastasMap[p.setor as Setor]!.map((s) => <option key={s} value={s}>{s}</option>)}
+              {(subpastasMap[p.setor as Setor] ?? []).map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </Field>
         ) : null}
