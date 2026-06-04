@@ -33,6 +33,7 @@ export default function AppLayout() {
           <NavItem to="/treinamentos" icon={<BookOpen className="size-4" />} label="Treinamentos" />
           {canEdit && <NavItem to="/novo" icon={<Sparkles className="size-4" />} label="Novo c/ IA" />}
           {role === "admin" && <NavItem to="/permissoes" icon={<Shield className="size-4" />} label="Permissões" />}
+          {role === "admin" && <NavItem to="/admin/sistemas" icon={<Settings className="size-4" />} label="Sistemas (Admin)" />}
           <div className="pt-4 px-2 text-[11px] uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5">
             <FolderTree className="size-3" /> Sistemas
           </div>
