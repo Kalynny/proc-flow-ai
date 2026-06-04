@@ -46,10 +46,10 @@ export function SistemasProvider({ children }: { children: ReactNode }) {
       supabase.from("sistema_setores" as any).select("*").order("ordem"),
       supabase.from("subpastas" as any).select("*").order("ordem").order("nome"),
     ]);
-    const setoresArr = (sets ?? []) as SetorRow[];
-    const sistemasArr = (sis ?? []) as any[];
-    const linksArr = (ss ?? []) as any[];
-    const subsArr = (subs ?? []) as SubpastaRow[];
+    const setoresArr = ((sets ?? []) as unknown) as SetorRow[];
+    const sistemasArr = ((sis ?? []) as unknown) as any[];
+    const linksArr = ((ss ?? []) as unknown) as any[];
+    const subsArr = ((subs ?? []) as unknown) as SubpastaRow[];
 
     const setorById: Record<string, SetorRow> = {};
     setoresArr.forEach((s) => { setorById[s.id] = s; });
