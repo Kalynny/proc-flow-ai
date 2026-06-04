@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { SETORES, SUBPASTAS, type Setor } from "@/lib/utils";
+import { useSistemasData, type Setor } from "@/lib/sistemas";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, Save, Plus, Trash2 } from "lucide-react";
