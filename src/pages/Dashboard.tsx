@@ -10,7 +10,7 @@ type Proc = { id: string; codigo: string; titulo: string; setor: string; video_u
 
 export default function Dashboard() {
   const { role } = useAuth();
-  const { setorNomes: SETORES } = useSistemasData();
+  const { setorNomes: setorNomes } = useSistemasData();
   const [items, setItems] = useState<Proc[]>([]); const [q, setQ] = useState("");
 
   useEffect(() => { (async () => {
@@ -96,7 +96,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        {SETORES.map((s) => (
+        {setorNomes.map((s) => (
           <Link key={s} to={`/setor/${encodeURIComponent(s)}`} className="glass rounded-lg p-4 hover:border-primary/50 transition group">
             <div className="text-xs text-muted-foreground">Setor</div>
             <div className="font-semibold mt-1 group-hover:text-primary">{s}</div>
