@@ -1,8 +1,9 @@
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
-import { SETORES, SISTEMAS, normSistemaRef, cn } from "@/lib/utils";
-import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, ChevronRight, Shield, BookOpen } from "lucide-react";
+import { useSistemasData } from "@/lib/sistemas";
+import { normSistemaRef, cn } from "@/lib/utils";
+import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, ChevronRight, Shield, BookOpen, Settings } from "lucide-react";
 
 export default function AppLayout() {
   const { signOut, user, role, sistemas: allowed } = useAuth();
