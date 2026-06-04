@@ -61,6 +61,35 @@ export default function SetorPage() {
       <h1 className="text-3xl font-bold">{subpastaName || setorName}</h1>
       <p className="text-muted-foreground mt-1 mb-8">{visibleItems.length} treinamento(s){subpastaName ? " nesta subpasta" : " neste setor"}.</p>
 
+      {!subpastaName && isSistemaRoute && SISTEMA_INFO[setorName] && (
+        <div className="mb-8 glass rounded-xl p-5 border border-primary/20">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="size-8 rounded-md bg-primary/15 grid place-items-center text-primary"><Info className="size-4" /></div>
+            <div className="font-semibold">Sobre o sistema {setorName}</div>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">{SISTEMA_INFO[setorName].descricao}</p>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-muted-foreground/80 mb-1.5">
+                <Target className="size-3" /> Finalidade
+              </div>
+              <p className="text-sm">{SISTEMA_INFO[setorName].finalidade}</p>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-muted-foreground/80 mb-1.5">
+                <Layers className="size-3" /> Setores atendidos
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {SISTEMA_INFO[setorName].modulos.map((m) => (
+                  <span key={m} className="text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">{m}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       {!subpastaName && subpastas.length > 0 && (
         <div className="mb-8">
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground/70 mb-3">Subpastas</div>
