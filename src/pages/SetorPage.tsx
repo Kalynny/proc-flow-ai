@@ -9,15 +9,15 @@ import { useAuth } from "@/components/AuthProvider";
 export default function SetorPage() {
   const { setor, subpasta } = useParams();
   const { role, sistemas: allowed } = useAuth();
-  const { sistemas: SISTEMAS, sistemaNomes: SISTEMA_NOMES, sistemaInfo: SISTEMA_INFO, subpastas: SUBPASTAS } = useSistemasData();
+  const { sistemas: sistemasAll, sistemaNomes, sistemaInfo, subpastas: subpastasMap } = useSistemasData();
   const [items, setItems] = useState<any[]>([]);
   const setorName = setor ? decodeURIComponent(setor) : "";
   const subpastaName = subpasta ? decodeURIComponent(subpasta) : "";
-  const subpastas = SUBPASTAS[setorName] ?? [];
+  const subpastas = subpastasMap[setorName] ?? [];
 
   const isAdmin = role === "admin";
-  const isSistemaRoute = SISTEMA_NOMES.includes(setorName);
-  const sistemasDoSetor = SISTEMAS.filter((s) => s.setores.some((r) => normSistemaRef(r).setor === setorName)).map((s) => s.nome);
+  const isSistemaRoute = sistemaNomes.includes(setorName);
+  const sistemasDoSetor = sistemasAll.filter((s) => s.setores.some((r) => normSistemaRef(r).setor === setorName)).map((s) => s.nome);
   const liberado = isAdmin
     || (isSistemaRoute && allowed.includes(setorName))
     || (!isSistemaRoute && sistemasDoSetor.some((n) => allowed.includes(n)));
