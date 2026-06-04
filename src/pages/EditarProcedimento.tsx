@@ -10,7 +10,7 @@ export default function EditarProcedimento() {
   const { id } = useParams();
   const nav = useNavigate();
   const { role, user } = useAuth();
-  const { setorNomes: setorNomes, subpastas: subpastasMap } = useSistemasData();
+  const { setorNomes, subpastas: subpastasMap } = useSistemasData();
   const [p, setP] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 export default function NovoProcedimento() {
   const nav = useNavigate();
-  const { setorNomes: setorNomes, subpastas: subpastasMap } = useSistemasData();
+  const { setorNomes, subpastas: subpastasMap } = useSistemasData();
   const [setor, setSetor] = useState<Setor>(setorNomes[0] ?? "");
   const [subpasta, setSubpasta] = useState<string>("");
   const [conteudo, setConteudo] = useState("");
