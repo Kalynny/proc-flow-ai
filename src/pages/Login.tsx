@@ -1,22 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Truck, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
+import { Truck, Mail, Lock, Loader2, Eye, EyeOff, Building2 } from "lucide-react";
 
 export default function Login() {
   const nav = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [name, setName] = useState("");
+  const [setor, setSetor] = useState("");
+  const [setores, setSetores] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (mode !== "signup") return;
+    (async () => {
+      const { data, error } = await supabase
+        .from("setores" as any)
+        .select("nome")
+        .order("ordem")
+        .order("nome");
+      if (error) { console.error(error); return; }
+      setSetores(((data ?? []) as any[]).map((r) => r.nome));
+    })();
+  }, [mode]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault(); setLoading(true);
     try {
       if (mode === "signup") {
+        if (!name.trim()) throw new Error("Informe seu nome");
+        if (!setor) throw new Error("Selecione um setor");
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: `${window.location.origin}/`, data: { full_name: name } },
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+            data: { full_name: name, departamento: setor },
+          },
         });
         if (error) throw error;
         toast.success("Conta criada! Você já pode entrar.");
@@ -87,6 +107,22 @@ export default function Login() {
           )}
           <Field icon={<Mail className="size-4" />} type="email" placeholder="email@empresa.com" value={email} onChange={setEmail} />
           <PasswordField value={password} onChange={setPassword} />
+          {mode === "signup" && (
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"><Building2 className="size-4" /></span>
+              <select
+                required
+                value={setor}
+                onChange={(e) => setSetor(e.target.value)}
+                className="w-full bg-background/60 border border-border rounded-md py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none"
+              >
+                <option value="" disabled>Selecione seu setor</option>
+                {setores.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <button disabled={loading} className="w-full bg-primary text-primary-foreground py-2.5 rounded-md font-medium hover:bg-primary/90 transition flex items-center justify-center gap-2">
             {loading && <Loader2 className="size-4 animate-spin" />}
