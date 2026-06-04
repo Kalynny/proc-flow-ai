@@ -32,7 +32,7 @@ export default function AdminSistemas() {
 
       {tab === "sistemas" && <SistemasTab sistemas={sistemas} setores={setores} reload={reload} />}
       {tab === "setores" && <SetoresTab setores={setores} reload={reload} />}
-      {tab === "subpastas" && <SubpastasTab setores={setores} subpastas={subMap} setorByName={setorByName} reload={reload} />}
+      {tab === "subpastas" && <SubpastasTab setores={setores} setorByName={setorByName} reload={reload} />}
     </div>
   );
 }
