@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { SETORES, codigoNum } from "@/lib/utils";
+import { codigoNum } from "@/lib/utils";
+import { useSistemasData } from "@/lib/sistemas";
 import { Search, Video, FileText, Layers, Activity, Sparkles } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 
