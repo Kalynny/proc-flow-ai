@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Video, Folder, Lock } from "lucide-react";
-import { codigoNum, SUBPASTAS, SISTEMAS, SISTEMA_NOMES, normSistemaRef, type Setor } from "@/lib/utils";
+import { ArrowLeft, Video, Folder, Lock, Info, Target, Layers } from "lucide-react";
+import { codigoNum, SUBPASTAS, SISTEMAS, SISTEMA_NOMES, SISTEMA_INFO, normSistemaRef, type Setor } from "@/lib/utils";
 import { useAuth } from "@/components/AuthProvider";
 
 export default function SetorPage() {
