@@ -10,7 +10,7 @@ const inp = "w-full bg-background/60 border border-border rounded-md py-2 px-3 t
 
 export default function AdminSistemas() {
   const { role, loading: authLoading } = useAuth();
-  const { sistemas, setores, subpastas: subMap, setorByName, reload, loading } = useSistemasData();
+  const { sistemas, setores, setorByName, reload, loading } = useSistemasData();
   const [tab, setTab] = useState<"sistemas" | "setores" | "subpastas">("sistemas");
 
   if (authLoading || loading) return <div className="p-10 text-muted-foreground">Carregando…</div>;
@@ -32,7 +32,7 @@ export default function AdminSistemas() {
 
       {tab === "sistemas" && <SistemasTab sistemas={sistemas} setores={setores} reload={reload} />}
       {tab === "setores" && <SetoresTab setores={setores} reload={reload} />}
-      {tab === "subpastas" && <SubpastasTab setores={setores} subpastas={subMap} setorByName={setorByName} reload={reload} />}
+      {tab === "subpastas" && <SubpastasTab setores={setores} setorByName={setorByName} reload={reload} />}
     </div>
   );
 }
@@ -227,26 +227,35 @@ function SetorEditModal({ setor, onClose, onSaved }: { setor: SetorRow; onClose:
 }
 
 /* ---------------------------- SUBPASTAS ---------------------------- */
-function SubpastasTab({ setores, subpastas, setorByName, reload }: { setores: SetorRow[]; subpastas: Record<string, string[]>; setorByName: Record<string, SetorRow>; reload: () => Promise<void> }) {
+type SubRow = { id: string; nome: string; ordem: number; setor_id: string };
+
+function SubpastasTab({ setores, setorByName, reload }: { setores: SetorRow[]; setorByName: Record<string, SetorRow>; reload: () => Promise<void> }) {
   const [selSetor, setSelSetor] = useState<string>(setores[0]?.nome ?? "");
   const [nova, setNova] = useState("");
+  const [novaOrdem, setNovaOrdem] = useState(0);
+  const [rows, setRows] = useState<SubRow[]>([]);
+  const [editing, setEditing] = useState<SubRow | null>(null);
   const setor = setorByName[selSetor];
-  const lista = subpastas[selSetor] ?? [];
+
+  async function carregar() {
+    if (!setor) { setRows([]); return; }
+    const { data } = await supabase.from("subpastas" as any).select("*").eq("setor_id", setor.id).order("ordem").order("nome");
+    setRows(((data ?? []) as unknown) as SubRow[]);
+  }
+  useEffect(() => { carregar(); /* eslint-disable-next-line */ }, [selSetor, setor?.id]);
 
   async function criar() {
     if (!nova.trim() || !setor) return;
-    const { error } = await supabase.from("subpastas" as any).insert({ setor_id: setor.id, nome: nova.trim(), ordem: (lista.length + 1) * 10 });
+    const { error } = await supabase.from("subpastas" as any).insert({ setor_id: setor.id, nome: nova.trim(), ordem: novaOrdem || (rows.length + 1) * 10 });
     if (error) { toast.error(error.message); return; }
-    setNova(""); toast.success("Criada"); reload();
+    setNova(""); setNovaOrdem(0); toast.success("Criada");
+    await carregar(); reload();
   }
-  async function excluir(nome: string) {
-    if (!setor) return;
-    if (!confirm(`Excluir subpasta "${nome}" de ${selSetor}?`)) return;
-    // need subpasta id — fetch
-    const { data } = await supabase.from("subpastas" as any).select("id").eq("setor_id", setor.id).eq("nome", nome).maybeSingle();
-    if (!data) return;
-    const { error } = await supabase.from("subpastas" as any).delete().eq("id", (data as any).id);
-    if (error) toast.error(error.message); else { toast.success("Excluída"); reload(); }
+  async function excluir(r: SubRow) {
+    if (!confirm(`Excluir subpasta "${r.nome}"?`)) return;
+    const { error } = await supabase.from("subpastas" as any).delete().eq("id", r.id);
+    if (error) toast.error(error.message);
+    else { toast.success("Excluída"); await carregar(); reload(); }
   }
 
   return (
@@ -258,22 +267,66 @@ function SubpastasTab({ setores, subpastas, setorByName, reload }: { setores: Se
           </select>
         </Field>
         <Field label="Nova subpasta" className="flex-1 min-w-[200px]"><input value={nova} onChange={(e) => setNova(e.target.value)} className={inp} /></Field>
+        <Field label="Ordem"><input type="number" value={novaOrdem} onChange={(e) => setNovaOrdem(parseInt(e.target.value) || 0)} className={inp + " w-24"} /></Field>
         <button onClick={criar} className="flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-2 rounded-md text-sm hover:bg-primary/90"><Plus className="size-4" /> Adicionar</button>
       </div>
-      <div className="glass rounded-lg p-4">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground/70 mb-3">Subpastas de {selSetor}</div>
-        {lista.length === 0 ? <div className="text-sm text-muted-foreground py-4">Nenhuma subpasta.</div> : (
-          <ul className="divide-y divide-border">
-            {lista.map((n) => (
-              <li key={n} className="flex items-center justify-between py-2">
-                <span className="text-sm">{n}</span>
-                <button onClick={() => excluir(n)} className="p-1.5 text-muted-foreground hover:text-destructive"><Trash2 className="size-4" /></button>
-              </li>
-            ))}
-          </ul>
+      <div className="glass rounded-lg overflow-hidden">
+        <div className="px-4 py-2 text-xs uppercase tracking-wider text-muted-foreground/70 bg-muted/30 border-b border-border">
+          Subpastas de {selSetor || "—"}
+        </div>
+        {rows.length === 0 ? (
+          <div className="text-sm text-muted-foreground py-6 text-center">Nenhuma subpasta.</div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="bg-muted/20 text-xs uppercase text-muted-foreground">
+              <tr><th className="text-left px-4 py-2">Nome</th><th className="text-left px-4 py-2 w-32">Ordem</th><th className="w-28"></th></tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.id} className="border-t border-border">
+                  <td className="px-4 py-2">{r.nome}</td>
+                  <td className="px-4 py-2 text-muted-foreground">{r.ordem}</td>
+                  <td className="px-4 py-2 text-right">
+                    <button onClick={() => setEditing(r)} className="px-2 py-1 text-xs border border-border rounded hover:bg-muted/40 mr-1">Editar</button>
+                    <button onClick={() => excluir(r)} className="p-1.5 text-muted-foreground hover:text-destructive"><Trash2 className="size-4" /></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
+      {editing && (
+        <SubpastaEditModal sub={editing} onClose={() => setEditing(null)} onSaved={async () => { setEditing(null); await carregar(); reload(); }} />
+      )}
     </div>
+  );
+}
+
+function SubpastaEditModal({ sub, onClose, onSaved }: { sub: SubRow; onClose: () => void; onSaved: () => void }) {
+  const [nome, setNome] = useState(sub.nome);
+  const [ordem, setOrdem] = useState(sub.ordem);
+  const [saving, setSaving] = useState(false);
+  async function salvar() {
+    if (!nome.trim()) { toast.error("Nome obrigatório"); return; }
+    setSaving(true);
+    const { error } = await supabase.from("subpastas" as any).update({ nome: nome.trim(), ordem }).eq("id", sub.id);
+    setSaving(false);
+    if (error) toast.error(error.message); else { toast.success("Salvo"); onSaved(); }
+  }
+  return (
+    <Modal onClose={onClose} title={`Editar ${sub.nome}`}>
+      <div className="space-y-3">
+        <Field label="Nome"><input value={nome} onChange={(e) => setNome(e.target.value)} className={inp} /></Field>
+        <Field label="Ordem"><input type="number" value={ordem} onChange={(e) => setOrdem(parseInt(e.target.value) || 0)} className={inp} /></Field>
+        <div className="flex gap-2 justify-end pt-2 border-t border-border">
+          <button onClick={onClose} className="px-4 py-2 rounded-md border border-border text-sm">Cancelar</button>
+          <button onClick={salvar} disabled={saving} className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium disabled:opacity-60">
+            {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />} Salvar
+          </button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
