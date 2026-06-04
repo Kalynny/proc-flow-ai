@@ -9,15 +9,15 @@ import { useAuth } from "@/components/AuthProvider";
 export default function SetorPage() {
   const { setor, subpasta } = useParams();
   const { role, sistemas: allowed } = useAuth();
-  const { sistemas: SISTEMAS, sistemaNomes: SISTEMA_NOMES, sistemaInfo: SISTEMA_INFO, subpastas: SUBPASTAS } = useSistemasData();
+  const { sistemas: sistemasAll, sistemaNomes, sistemaInfo, subpastas: subpastasMap } = useSistemasData();
   const [items, setItems] = useState<any[]>([]);
   const setorName = setor ? decodeURIComponent(setor) : "";
   const subpastaName = subpasta ? decodeURIComponent(subpasta) : "";
-  const subpastas = SUBPASTAS[setorName] ?? [];
+  const subpastas = subpastasMap[setorName] ?? [];
 
   const isAdmin = role === "admin";
-  const isSistemaRoute = SISTEMA_NOMES.includes(setorName);
-  const sistemasDoSetor = SISTEMAS.filter((s) => s.setores.some((r) => normSistemaRef(r).setor === setorName)).map((s) => s.nome);
+  const isSistemaRoute = sistemaNomes.includes(setorName);
+  const sistemasDoSetor = sistemasAll.filter((s) => s.setores.some((r) => normSistemaRef(r).setor === setorName)).map((s) => s.nome);
   const liberado = isAdmin
     || (isSistemaRoute && allowed.includes(setorName))
     || (!isSistemaRoute && sistemasDoSetor.some((n) => allowed.includes(n)));
@@ -63,26 +63,26 @@ export default function SetorPage() {
       <h1 className="text-3xl font-bold">{subpastaName || setorName}</h1>
       <p className="text-muted-foreground mt-1 mb-8">{visibleItems.length} treinamento(s){subpastaName ? " nesta subpasta" : " neste setor"}.</p>
 
-      {!subpastaName && isSistemaRoute && SISTEMA_INFO[setorName] && (
+      {!subpastaName && isSistemaRoute && sistemaInfo[setorName] && (
         <div className="mb-8 glass rounded-xl p-5 border border-primary/20">
           <div className="flex items-center gap-2 mb-3">
             <div className="size-8 rounded-md bg-primary/15 grid place-items-center text-primary"><Info className="size-4" /></div>
             <div className="font-semibold">Sobre o sistema {setorName}</div>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed mb-4">{SISTEMA_INFO[setorName].descricao}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">{sistemaInfo[setorName].descricao}</p>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="rounded-lg bg-muted/30 p-3">
               <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-muted-foreground/80 mb-1.5">
                 <Target className="size-3" /> Finalidade
               </div>
-              <p className="text-sm">{SISTEMA_INFO[setorName].finalidade}</p>
+              <p className="text-sm">{sistemaInfo[setorName].finalidade}</p>
             </div>
             <div className="rounded-lg bg-muted/30 p-3">
               <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-muted-foreground/80 mb-1.5">
                 <Layers className="size-3" /> Setores atendidos
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {SISTEMA_INFO[setorName].modulos.map((m) => (
+                {sistemaInfo[setorName].modulos.map((m) => (
                   <span key={m} className="text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">{m}</span>
                 ))}
               </div>

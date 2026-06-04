@@ -10,7 +10,7 @@ export default function EditarProcedimento() {
   const { id } = useParams();
   const nav = useNavigate();
   const { role, user } = useAuth();
-  const { setorNomes: SETORES, subpastas: SUBPASTAS } = useSistemasData();
+  const { setorNomes, subpastas: subpastasMap } = useSistemasData();
   const [p, setP] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -82,16 +82,16 @@ export default function EditarProcedimento() {
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label="Setor">
             <select value={p.setor} onChange={(e) => update("setor", e.target.value as Setor)} className={inp}>
-              {SETORES.map((s) => <option key={s}>{s}</option>)}
+              {setorNomes.map((s) => <option key={s}>{s}</option>)}
             </select>
           </Field>
           <Field label="Responsável"><input value={p.responsavel ?? ""} onChange={(e) => update("responsavel", e.target.value)} className={inp} /></Field>
         </div>
-        {SUBPASTAS[p.setor as Setor]?.length ? (
+        {subpastasMap[p.setor as Setor]?.length ? (
           <Field label="Sub-pasta">
             <select value={p.subpasta ?? ""} onChange={(e) => update("subpasta", e.target.value || null)} className={inp}>
               <option value="">— Sem sub-pasta —</option>
-              {SUBPASTAS[p.setor as Setor]!.map((s) => <option key={s} value={s}>{s}</option>)}
+              {subpastasMap[p.setor as Setor]!.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </Field>
         ) : null}

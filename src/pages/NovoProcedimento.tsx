@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 
 export default function NovoProcedimento() {
   const nav = useNavigate();
-  const { setorNomes: SETORES, subpastas: SUBPASTAS } = useSistemasData();
-  const [setor, setSetor] = useState<Setor>(SETORES[0] ?? "");
+  const { setorNomes, subpastas: subpastasMap } = useSistemasData();
+  const [setor, setSetor] = useState<Setor>(setorNomes[0] ?? "");
   const [subpasta, setSubpasta] = useState<string>("");
   const [conteudo, setConteudo] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
@@ -78,16 +78,16 @@ export default function NovoProcedimento() {
             <label className="text-xs font-medium text-muted-foreground">Setor</label>
             <select value={setor} onChange={(e) => { setSetor(e.target.value as Setor); setSubpasta(""); }}
               className="w-full mt-1 bg-background/60 border border-border rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
-              {SETORES.map((s) => <option key={s}>{s}</option>)}
+              {setorNomes.map((s) => <option key={s}>{s}</option>)}
             </select>
           </div>
-          {(SUBPASTAS[setor] ?? []).length > 0 && (
+          {(subpastasMap[setor] ?? []).length > 0 && (
             <div>
               <label className="text-xs font-medium text-muted-foreground">Sub-pasta (opcional)</label>
               <select value={subpasta} onChange={(e) => setSubpasta(e.target.value)}
                 className="w-full mt-1 bg-background/60 border border-border rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
                 <option value="">— Nenhuma —</option>
-                {(SUBPASTAS[setor] ?? []).map((s) => <option key={s}>{s}</option>)}
+                {(subpastasMap[setor] ?? []).map((s) => <option key={s}>{s}</option>)}
               </select>
             </div>
           )}
