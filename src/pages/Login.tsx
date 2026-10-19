@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Truck, Mail, Lock, Loader2, Eye, EyeOff, Building2 } from "lucide-react";
+import logoAsset from "@/assets/piaui-log-logo.png.asset.json";
+
+const logoUrl = logoAsset.url;
 
 export default function Login() {
   const nav = useNavigate();
@@ -89,6 +92,10 @@ export default function Login() {
           <div>
             <h2 className="text-2xl font-bold">{mode === "signin" ? "Entrar" : "Criar conta"}</h2>
             <p className="text-sm text-muted-foreground mt-1">Acesse o Portal de Conhecimento da Imediata Transportes</p>
+          </div>
+
+          <div className="flex justify-center">
+            <img src={logoUrl} alt="Piauí Log" className="h-14 w-auto" />
           </div>
 
           <button type="button" onClick={google} disabled={loading}
