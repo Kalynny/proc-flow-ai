@@ -123,3 +123,7 @@ function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; va
     </div>
   );
 }
+
+function hasVideo(p: Proc) {
+  return Boolean((p.video_url && p.video_url.trim() !== "") || (p.google_drive_url && p.google_drive_url.trim() !== ""));
+}
