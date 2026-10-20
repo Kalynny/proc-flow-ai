@@ -13,11 +13,13 @@ type Row = {
   departamento: string | null;
   role: "admin" | "editor" | "viewer";
   sistemas: string[];
+  setores: string[];
 };
 
 export default function Permissoes() {
   const { role } = useAuth();
-  const { sistemaNomes: SISTEMA_NOMES } = useSistemasData();
+  const { sistemaNomes: SISTEMA_NOMES, setorNomes } = useSistemasData();
+  const [openSetId, setOpenSetId] = useState<string | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -28,11 +30,14 @@ export default function Permissoes() {
 
   async function load() {
     setLoading(true);
-    const [{ data: profs }, { data: roles }, { data: sists }] = await Promise.all([
+    const [{ data: profs }, { data: roles }, { data: sists }, { data: sets }] = await Promise.all([
       supabase.from("profiles").select("id, email, full_name, departamento").order("email"),
       supabase.from("user_roles").select("user_id, role"),
       supabase.from("user_sistemas").select("user_id, sistema"),
+      supabase.from("user_setores" as any).select("user_id, setor"),
     ]);
+    const setMap = new Map<string, string[]>();
+    ((sets ?? []) as any[]).forEach((s) => setMap.set(s.user_id, [...(setMap.get(s.user_id) ?? []), s.setor]));
     const roleMap = new Map<string, Row["role"]>();
     (roles ?? []).forEach((r: any) => {
       const cur = roleMap.get(r.user_id);
@@ -49,6 +54,7 @@ export default function Permissoes() {
       id: p.id, email: p.email, full_name: p.full_name,
       departamento: p.departamento, role: roleMap.get(p.id) ?? "viewer",
       sistemas: sistMap.get(p.id) ?? [],
+      setores: setMap.get(p.id) ?? [],
     })));
     setLoading(false);
   }
@@ -88,6 +94,17 @@ export default function Permissoes() {
     }
   }
 
+  async function toggleSetor(id: string, setor: string, checked: boolean) {
+    setSavingId(id);
+    const q = supabase.from("user_setores" as any);
+    const { error } = checked
+      ? await q.insert({ user_id: id, setor } as any)
+      : await q.delete().eq("user_id", id).eq("setor", setor);
+    setSavingId(null);
+    if (error) { toast.error(error.message); return; }
+    setRows((r) => r.map((x) => x.id === id ? { ...x, setores: checked ? [...x.setores, setor] : x.setores.filter((s) => s !== setor) } : x));
+  }
+
   if (role !== "admin") {
     return (
       <div className="p-8">
@@ -123,6 +140,7 @@ export default function Permissoes() {
                 <th className="text-left px-4 py-3">Departamento</th>
                 <th className="text-left px-4 py-3">Nível</th>
                 <th className="text-left px-4 py-3">Sistemas</th>
+                <th className="text-left px-4 py-3">Setores (treinamentos)</th>
                 <th className="text-left px-4 py-3">Senha</th>
               </tr>
             </thead>
@@ -189,6 +207,36 @@ export default function Permissoes() {
                       </div>
                     )}
                   </td>
+                  <td className="px-4 py-3 relative">
+                    <button
+                      type="button"
+                      onClick={() => setOpenSetId(openSetId === u.id ? null : u.id)}
+                      className="bg-background/60 border border-border rounded-md py-1.5 px-3 text-sm hover:bg-muted/60 min-w-[180px] text-left"
+                    >
+                      {u.role === "admin"
+                        ? <span className="text-muted-foreground">Todos (admin)</span>
+                        : u.setores.length === 0
+                        ? <span className="text-muted-foreground">Nenhum setor</span>
+                        : <span>{u.setores.length} setor{u.setores.length > 1 ? "es" : ""}</span>}
+                    </button>
+                    {openSetId === u.id && (
+                      <div className="absolute z-20 mt-2 w-64 max-h-72 overflow-auto glass rounded-lg border border-border shadow-xl p-2">
+                        {setorNomes.map((s) => {
+                          const checked = u.setores.includes(s);
+                          return (
+                            <label key={s} className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-muted/50 cursor-pointer text-sm">
+                              <input type="checkbox" checked={checked} disabled={savingId === u.id}
+                                onChange={(e) => toggleSetor(u.id, s, e.target.checked)} className="sr-only" />
+                              <span className={`size-4 rounded border grid place-items-center ${checked ? "bg-primary border-primary" : "border-border"}`}>
+                                {checked && <Check className="size-3 text-primary-foreground" />}
+                              </span>
+                              {s}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <button
                       type="button"
@@ -201,7 +249,7 @@ export default function Permissoes() {
                 </tr>
               ))}
               {rows.length === 0 && (
-                <tr><td colSpan={5} className="px-4 py-10 text-center text-muted-foreground">Nenhum usuário encontrado.</td></tr>
+                <tr><td colSpan={6} className="px-4 py-10 text-center text-muted-foreground">Nenhum usuário encontrado.</td></tr>
               )}
             </tbody>
           </table>
