@@ -88,7 +88,7 @@ export default function Dashboard() {
                 <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="px-2 py-0.5 rounded bg-muted/60">{p.setor}</span>
                   {hasVideo(p) && (
-                    <span className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-md bg-primary text-primary-foreground text-[11px] font-semibold">
+                    <span className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-md bg-primary text-accent-foreground text-[11px] font-semibold">
                       <Video className="size-3.5" /> Tem vídeo
                     </span>
                   )}
