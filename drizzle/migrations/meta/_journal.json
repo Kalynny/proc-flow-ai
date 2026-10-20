@@ -15,6 +15,13 @@
       "when": 1792499199470,
       "tag": "0001_setores_public_read",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792508740397,
+      "tag": "0002_user_setores",
+      "breakpoints": true
     }
   ]
 }
