@@ -8,6 +8,13 @@
       "when": 1792247928256,
       "tag": "0000_signup_trigger_and_seed_setores",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792499199470,
+      "tag": "0001_setores_public_read",
+      "breakpoints": true
     }
   ]
 }
