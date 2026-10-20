@@ -39,7 +39,7 @@ export default function Dashboard() {
     return m;
   }, [items]);
 
-  const totalVideos = items.filter((i) => (i.video_url && i.video_url.trim() !== "") || (i.google_drive_url && i.google_drive_url.trim() !== "")).length;
+  const totalVideos = items.filter(hasVideo).length;
 
   return (
     <div className="p-6 lg:p-10 max-w-[1400px] mx-auto space-y-8">
@@ -87,7 +87,11 @@ export default function Dashboard() {
                 <div className="font-medium leading-snug group-hover:text-primary transition">{p.titulo}</div>
                 <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="px-2 py-0.5 rounded bg-muted/60">{p.setor}</span>
-                  {p.video_url && <span className="flex items-center gap-1"><Video className="size-3" /> vídeo</span>}
+                  {hasVideo(p) && (
+                    <span className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded bg-primary/15 text-primary font-medium">
+                      <Video className="size-3" /> Tem vídeo
+                    </span>
+                  )}
                 </div>
               </Link>
             ))}
