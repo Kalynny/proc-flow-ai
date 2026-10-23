@@ -273,6 +273,109 @@ export type Database = {
           },
         ]
       }
+      treinamento_avaliacoes: {
+        Row: {
+          id: string
+          procedimento_id: string
+          questoes: Json
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          procedimento_id: string
+          questoes?: Json
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          procedimento_id?: string
+          questoes?: Json
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treinamento_avaliacoes_procedimento_id_fkey"
+            columns: ["procedimento_id"]
+            isOneToOne: true
+            referencedRelation: "procedimentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      treinamento_gabaritos: {
+        Row: {
+          avaliacao_id: string
+          respostas: Json
+        }
+        Insert: {
+          avaliacao_id: string
+          respostas: Json
+        }
+        Update: {
+          avaliacao_id?: string
+          respostas?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treinamento_gabaritos_avaliacao_id_fkey"
+            columns: ["avaliacao_id"]
+            isOneToOne: true
+            referencedRelation: "treinamento_avaliacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      treinamento_resultados: {
+        Row: {
+          acertos: number
+          avaliacao_id: string
+          created_at: string
+          id: string
+          procedimento_id: string
+          respostas: Json
+          total: number
+          user_id: string
+        }
+        Insert: {
+          acertos: number
+          avaliacao_id: string
+          created_at?: string
+          id?: string
+          procedimento_id: string
+          respostas: Json
+          total: number
+          user_id: string
+        }
+        Update: {
+          acertos?: number
+          avaliacao_id?: string
+          created_at?: string
+          id?: string
+          procedimento_id?: string
+          respostas?: Json
+          total?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treinamento_resultados_avaliacao_id_fkey"
+            columns: ["avaliacao_id"]
+            isOneToOne: false
+            referencedRelation: "treinamento_avaliacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "treinamento_resultados_procedimento_id_fkey"
+            columns: ["procedimento_id"]
+            isOneToOne: false
+            referencedRelation: "procedimentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -341,6 +444,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      enviar_avaliacao_treinamento: {
+        Args: {
+          _avaliacao_id: string
+          _procedimento_id: string
+          _respostas: Json
+          _updated_at: string
+        }
+        Returns: Json
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -351,6 +463,15 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      salvar_avaliacao_treinamento: {
+        Args: {
+          _gabarito: Json
+          _procedimento_id: string
+          _questoes: Json
+          _titulo: string
+        }
+        Returns: string
       }
     }
     Enums: {
