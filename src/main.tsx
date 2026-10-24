@@ -17,6 +17,7 @@ import EditarProcedimento from "@/pages/EditarProcedimento";
 import Permissoes from "@/pages/Permissoes";
 import Treinamentos from "@/pages/Treinamentos";
 import AdminSistemas from "@/pages/AdminSistemas";
+import AvaliacaoPage from "@/pages/AvaliacaoPage";
 import "@/index.css";
 
 const qc = new QueryClient();
@@ -37,6 +38,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   <Route path="/setor/:setor" element={<SetorPage />} />
                   <Route path="/setor/:setor/:subpasta" element={<SetorPage />} />
                   <Route path="/procedimento/:id" element={<ProcedimentoPage />} />
+                  <Route path="/procedimento/:id/prova/:avaliacaoId" element={<AvaliacaoPage />} />
                   <Route path="/novo" element={<NovoProcedimento />} />
                   <Route path="/procedimento/:id/editar" element={<EditarProcedimento />} />
                   <Route path="/permissoes" element={<Permissoes />} />
