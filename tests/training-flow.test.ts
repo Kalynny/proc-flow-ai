@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { assessmentPath, trainingVideo } from "./training-flow";
+import { assessmentPath, trainingVideo } from "../src/lib/training-flow";
 
 describe("training-specific assessments", () => {
   test("opens only the selected training's assessment", () => {
