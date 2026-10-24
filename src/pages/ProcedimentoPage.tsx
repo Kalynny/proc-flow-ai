@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Download, QrCode as QrIcon, History, AlertTriangle, Wrench, Video, Pencil, Save, X, Trash2, ExternalLink, Copy } from "lucide-react";
+import { ArrowLeft, Download, QrCode as QrIcon, History, AlertTriangle, Wrench, Video, Pencil, Save, X, Trash2, ExternalLink, Copy, FileText } from "lucide-react";
 import QRCode from "qrcode";
 import jsPDF from "jspdf";
-import { youtubeEmbed } from "@/lib/utils";
+import { assessmentPath, trainingVideo, type AssessmentLink } from "@/lib/training-flow";
+import { Button } from "@/components/Button";
+import { AssessmentEditor } from "@/components/AssessmentEditor";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
 
@@ -25,6 +27,11 @@ export default function ProcedimentoPage() {
   const [savingDrive, setSavingDrive] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [cloning, setCloning] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [assessment, setAssessment] = useState<AssessmentLink | null>(null);
+  const [assessmentLoading, setAssessmentLoading] = useState(true);
+  const [assessmentError, setAssessmentError] = useState(false);
+  const [editingAssessment, setEditingAssessment] = useState(false);
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
 
   async function excluir() {
@@ -114,18 +121,41 @@ export default function ProcedimentoPage() {
     } finally { setSavingDrive(false); }
   }
 
-  useEffect(() => { (async () => {
-    if (!id) return;
-    const { data } = await supabase.from("procedimentos").select("*").eq("id", id).maybeSingle();
-    setP(data);
-    QRCode.toDataURL(window.location.href, { width: 320, margin: 1, color: { dark: "#0b1220", light: "#ffffff" } }).then(setQr);
-    const { data: v } = await supabase.from("procedimento_versoes").select("*").eq("procedimento_id", id).order("created_at", { ascending: false });
-    setVersoes(v ?? []);
-  })(); }, [id]);
+  async function loadAssessment(trainingId: string) {
+    setAssessmentLoading(true);
+    setAssessmentError(false);
+    const { data, error } = await supabase.from("treinamento_avaliacoes").select("id,procedimento_id").eq("procedimento_id", trainingId).maybeSingle();
+    setAssessment(data);
+    setAssessmentError(!!error);
+    setAssessmentLoading(false);
+  }
+
+  useEffect(() => {
+    let active = true;
+    setP(null); setSelectedVideo(null); setAssessment(null); setAssessmentLoading(true); setAssessmentError(false); setEditingAssessment(false);
+    (async () => {
+      if (!id) return;
+      const [training, versions, exam] = await Promise.all([
+        supabase.from("procedimentos").select("*").eq("id", id).maybeSingle(),
+        supabase.from("procedimento_versoes").select("*").eq("procedimento_id", id).order("created_at", { ascending: false }),
+        supabase.from("treinamento_avaliacoes").select("id,procedimento_id").eq("procedimento_id", id).maybeSingle(),
+      ]);
+      if (!active) return;
+      setP(training.data); setVersoes(versions.data ?? []); setAssessment(exam.data); setAssessmentError(!!exam.error); setAssessmentLoading(false);
+      const image = await QRCode.toDataURL(window.location.href, { width: 320, margin: 1, color: { dark: "#0b1220", light: "#ffffff" } });
+      if (active) setQr(image);
+    })();
+    return () => { active = false; };
+  }, [id]);
 
   if (!p) return <div className="p-10 text-muted-foreground">Carregando…</div>;
 
-  const embed = youtubeEmbed(p.video_url);
+  const video = trainingVideo(selectedVideo ?? p.video_url);
+  const examPath = id ? assessmentPath(id, assessment) : null;
+  function showVideo(url: string) {
+    setSelectedVideo(url);
+    window.requestAnimationFrame(() => document.getElementById("training-video")?.scrollIntoView({ behavior: "smooth", block: "center" }));
+  }
 
   function downloadPDF() {
     const doc = new jsPDF({ unit: "pt", format: "a4" });
@@ -201,13 +231,16 @@ export default function ProcedimentoPage() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         <section className="lg:col-span-2 space-y-6">
-          <div className="glass rounded-xl overflow-hidden">
-            {embed ? (
-              <div className="aspect-video bg-black"><iframe src={embed} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /></div>
+          <div id="training-video" className="glass rounded-xl overflow-hidden">
+            {video ? (
+              <div className="aspect-video bg-background">
+                {video.kind === "iframe" ? <iframe key={video.src} title={`Vídeo — ${p.titulo}`} src={video.src} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                  : <video key={video.src} aria-label={`Vídeo — ${p.titulo}`} src={video.src} controls playsInline className="w-full h-full" />}
+              </div>
             ) : (
               <div className="p-5 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Video className="size-4" /> Nenhum vídeo de demonstração vinculado.
+                  <Video className="size-4" /> {selectedVideo || p.video_url ? "Este link não permite a exibição de vídeo nesta página." : "Nenhum vídeo de demonstração vinculado."}
                 </div>
                 {canEdit && !editingVideo && (
                   <button onClick={() => { setVideoDraft(p.video_url ?? ""); setEditingVideo(true); }}
@@ -217,7 +250,17 @@ export default function ProcedimentoPage() {
                 )}
               </div>
             )}
-            {canEdit && embed && !editingVideo && (
+            {video && <div className="px-5 py-4 border-t border-border space-y-3">
+              <Button disabled={assessmentLoading || assessmentError} onClick={() => {
+                if (examPath) nav(examPath);
+                else toast.info("A avaliação não está disponível para este treinamento.");
+              }}><FileText className="size-4" />Iniciar prova</Button>
+              {assessmentLoading ? <p className="text-sm text-muted-foreground">Carregando avaliação…</p>
+                : assessmentError ? <p role="alert" className="text-sm text-destructive">Não foi possível verificar a avaliação. <Button variant="ghost" onClick={() => id && loadAssessment(id)}>Tentar novamente</Button></p>
+                : !examPath && <p role="status" className="text-sm text-muted-foreground">A avaliação não está disponível para este treinamento.</p>}
+            </div>}
+            {!video && !assessmentLoading && !assessmentError && !examPath && <p role="status" className="px-5 pb-4 text-sm text-muted-foreground">A avaliação não está disponível para este treinamento.</p>}
+            {canEdit && video && !editingVideo && (
               <div className="px-5 py-3 border-t border-border flex justify-end">
                 <button onClick={() => { setVideoDraft(p.video_url ?? ""); setEditingVideo(true); }}
                   className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground">
@@ -243,6 +286,10 @@ export default function ProcedimentoPage() {
                 </div>
               </div>
             )}
+            {canEdit && !editingAssessment && <div className="px-5 py-3 border-t border-border">
+              <Button variant="outline" onClick={() => setEditingAssessment(true)}><Pencil className="size-4" />{assessment ? "Editar prova" : "Cadastrar prova"}</Button>
+            </div>}
+            {canEdit && editingAssessment && id && <AssessmentEditor key={id} trainingId={id} title={p.titulo} onClose={() => setEditingAssessment(false)} onSaved={() => { setEditingAssessment(false); void loadAssessment(id); }} />}
           </div>
 
           <Card title="Passo a passo">
@@ -291,7 +338,7 @@ export default function ProcedimentoPage() {
             {!editingDrive && (
               <>
                 {p.google_drive_url ? (
-                  <a href={p.google_drive_url} target="_blank" rel="noopener noreferrer"
+                  <a href="#training-video" onClick={(event) => { event.preventDefault(); showVideo(p.google_drive_url); }}
                     className="text-sm text-primary hover:underline break-all flex items-start gap-1.5">
                     <ExternalLink className="size-3.5 shrink-0 mt-0.5" />
                     <span>{p.google_drive_url}</span>
@@ -348,6 +395,7 @@ export default function ProcedimentoPage() {
     </div>
   );
 }
+
 
 function Info({ label, value }: { label: string; value?: string | null }) {
   return (<div><dt className="text-xs text-muted-foreground">{label}</dt><dd className="font-medium mt-0.5">{value || "—"}</dd></div>);
