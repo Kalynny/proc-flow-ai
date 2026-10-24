@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Download, QrCode as QrIcon, History, AlertTriangle, Wrench, Video, Pencil, Save, X, Trash2, ExternalLink, Copy } from "lucide-react";
+import { ArrowLeft, Download, QrCode as QrIcon, History, AlertTriangle, Wrench, Video, Pencil, Save, X, Trash2, ExternalLink, Copy, FileText } from "lucide-react";
 import QRCode from "qrcode";
 import jsPDF from "jspdf";
 import { assessmentPath, trainingVideo, type AssessmentLink } from "@/lib/training-flow";
@@ -254,11 +254,12 @@ export default function ProcedimentoPage() {
               <Button disabled={assessmentLoading || assessmentError} onClick={() => {
                 if (examPath) nav(examPath);
                 else toast.info("A avaliação não está disponível para este treinamento.");
-              }}><FileTextIcon />Iniciar prova</Button>
+              }}><FileText className="size-4" />Iniciar prova</Button>
               {assessmentLoading ? <p className="text-sm text-muted-foreground">Carregando avaliação…</p>
                 : assessmentError ? <p role="alert" className="text-sm text-destructive">Não foi possível verificar a avaliação. <Button variant="ghost" onClick={() => id && loadAssessment(id)}>Tentar novamente</Button></p>
                 : !examPath && <p role="status" className="text-sm text-muted-foreground">A avaliação não está disponível para este treinamento.</p>}
             </div>}
+            {!video && !assessmentLoading && !assessmentError && !examPath && <p role="status" className="px-5 pb-4 text-sm text-muted-foreground">A avaliação não está disponível para este treinamento.</p>}
             {canEdit && video && !editingVideo && (
               <div className="px-5 py-3 border-t border-border flex justify-end">
                 <button onClick={() => { setVideoDraft(p.video_url ?? ""); setEditingVideo(true); }}
@@ -395,7 +396,6 @@ export default function ProcedimentoPage() {
   );
 }
 
-function FileTextIcon() { return <Video className="size-4" />; }
 
 function Info({ label, value }: { label: string; value?: string | null }) {
   return (<div><dt className="text-xs text-muted-foreground">{label}</dt><dd className="font-medium mt-0.5">{value || "—"}</dd></div>);
