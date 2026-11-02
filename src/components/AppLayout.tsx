@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { useSistemasData } from "@/lib/sistemas";
 import { normSistemaRef, cn } from "@/lib/utils";
+import { canReviewResults } from "@/lib/manager-results";
 import { Truck, LayoutDashboard, FolderTree, PlusCircle, LogOut, Sparkles, ChevronRight, Shield, BookOpen, Settings } from "lucide-react";
 
 export default function AppLayout() {
@@ -31,6 +32,7 @@ export default function AppLayout() {
         <nav className="p-3 space-y-1 flex-1 overflow-y-auto">
           <NavItem to="/" icon={<LayoutDashboard className="size-4" />} label="Dashboard" end />
           <NavItem to="/treinamentos" icon={<BookOpen className="size-4" />} label="Treinamentos" />
+          {canReviewResults(role) && <NavItem to="/resultados" icon={<LayoutDashboard className="size-4" />} label="Resultados das avaliações" />}
           {canEdit && <NavItem to="/novo" icon={<Sparkles className="size-4" />} label="Novo c/ IA" />}
           {role === "admin" && <NavItem to="/permissoes" icon={<Shield className="size-4" />} label="Permissões" />}
           {role === "admin" && <NavItem to="/admin/sistemas" icon={<Settings className="size-4" />} label="Sistemas (Admin)" />}

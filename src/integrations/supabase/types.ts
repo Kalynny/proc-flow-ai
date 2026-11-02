@@ -328,6 +328,41 @@ export type Database = {
           },
         ]
       }
+      treinamento_resultado_detalhes: {
+        Row: {
+          avaliacao: string
+          colaborador: string
+          gabarito: Json
+          questoes: Json
+          resultado_id: string
+          treinamento: string
+        }
+        Insert: {
+          avaliacao: string
+          colaborador: string
+          gabarito: Json
+          questoes: Json
+          resultado_id: string
+          treinamento: string
+        }
+        Update: {
+          avaliacao?: string
+          colaborador?: string
+          gabarito?: Json
+          questoes?: Json
+          resultado_id?: string
+          treinamento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treinamento_resultado_detalhes_resultado_id_fkey"
+            columns: ["resultado_id"]
+            isOneToOne: true
+            referencedRelation: "treinamento_resultados"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       treinamento_resultados: {
         Row: {
           acertos: number
@@ -444,6 +479,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      consultar_resultado_gestor: {
+        Args: { _resultado_id: string }
+        Returns: Json
+      }
       enviar_avaliacao_treinamento: {
         Args: {
           _avaliacao_id: string
@@ -464,6 +503,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      listar_resultados_gestor: { Args: never; Returns: Json }
       salvar_avaliacao_treinamento: {
         Args: {
           _gabarito: Json
