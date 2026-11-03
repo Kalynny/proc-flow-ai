@@ -4,19 +4,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/Button";
 import { readQuestions, type Question } from "@/lib/training-flow";
 import { toast } from "sonner";
+import { validateGeneratedQuestions, type GeneratedQuestion } from "../../supabase/functions/gerar-prova/validation";
 
 type DraftQuestion = Question & { correta: number };
 const newQuestion = (): DraftQuestion => ({ enunciado: "", alternativas: ["", "", "", ""], correta: 0 });
 const inputClass = "w-full rounded-md border border-border bg-background/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40";
 
-export function AssessmentEditor({ trainingId, title, onSaved, onClose }: {
-  trainingId: string; title: string; onSaved: () => void; onClose: () => void;
+export function AssessmentEditor({ trainingId, title, onSaved, onClose, initialDraft }: {
+  trainingId: string; title: string; onSaved: () => void; onClose: () => void; initialDraft?: GeneratedQuestion[];
 }) {
   const [titulo, setTitulo] = useState(`Avaliação — ${title}`);
   const [questoes, setQuestoes] = useState<DraftQuestion[]>([newQuestion()]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [exists, setExists] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -24,6 +26,9 @@ export function AssessmentEditor({ trainingId, title, onSaved, onClose }: {
       try {
         const { data, error } = await supabase.from("treinamento_avaliacoes").select("*").eq("procedimento_id", trainingId).maybeSingle();
         if (error) throw error;
+        if (!active) return;
+        setExists(!!data);
+        if (initialDraft) { setQuestoes(initialDraft); return; }
         if (data) {
           const { data: key, error: keyError } = await supabase.from("treinamento_gabaritos").select("respostas").eq("avaliacao_id", data.id).single();
           if (keyError) throw keyError;
@@ -36,7 +41,7 @@ export function AssessmentEditor({ trainingId, title, onSaved, onClose }: {
       finally { if (active) setLoading(false); }
     })();
     return () => { active = false; };
-  }, [trainingId]);
+  }, [trainingId, initialDraft]);
 
   function update(index: number, patch: Partial<DraftQuestion>) {
     setQuestoes((current) => current.map((q, i) => i === index ? { ...q, ...patch } : q));
@@ -45,6 +50,11 @@ export function AssessmentEditor({ trainingId, title, onSaved, onClose }: {
   async function save(event: React.FormEvent) {
     event.preventDefault();
     if (!questoes.length) { toast.error("Cadastre ao menos uma questão"); return; }
+    if (initialDraft) {
+      try { validateGeneratedQuestions(questoes); }
+      catch (error) { toast.error(error instanceof Error ? error.message : "Prova inválida"); return; }
+    }
+    if (exists && !window.confirm("Substituir a prova deste treinamento? Todas as pontuações e respostas anteriores dos colaboradores serão preservadas.")) return;
     setSaving(true);
     try {
       const { error } = await supabase.rpc("salvar_avaliacao_treinamento", {
@@ -61,7 +71,7 @@ export function AssessmentEditor({ trainingId, title, onSaved, onClose }: {
 
   return <form onSubmit={save} className="space-y-5 border-t border-border p-5">
     <div className="flex items-center justify-between gap-3">
-      <h2 className="font-semibold">Prova do treinamento</h2>
+      <h2 className="font-semibold">{initialDraft ? "Revisar prova gerada com IA" : "Prova do treinamento"}</h2>
       <Button variant="ghost" onClick={onClose} disabled={saving} aria-label="Fechar cadastro da prova" title="Fechar"><X className="size-4" /></Button>
     </div>
     {loading ? <p className="text-sm text-muted-foreground">Carregando prova…</p> : loadError ? <p role="alert" className="text-sm text-destructive">Não foi possível carregar a prova. Feche e tente novamente.</p> : <>
@@ -81,7 +91,7 @@ export function AssessmentEditor({ trainingId, title, onSaved, onClose }: {
         </div>
       </fieldset>)}
       <div className="flex flex-wrap justify-between gap-3">
-        <Button variant="outline" onClick={() => setQuestoes((current) => [...current, newQuestion()])}><Plus className="size-4" />Adicionar questão</Button>
+        {!initialDraft && <Button variant="outline" onClick={() => setQuestoes((current) => [...current, newQuestion()])}><Plus className="size-4" />Adicionar questão</Button>}
         <Button type="submit" disabled={saving}><Save className="size-4" />{saving ? "Salvando…" : "Salvar prova"}</Button>
       </div>
     </>}

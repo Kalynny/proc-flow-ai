@@ -1,0 +1,7 @@
+import { expect, test } from "bun:test";
+import { validateGeneratedQuestions } from "../supabase/functions/gerar-prova/validation";
+const questions = () => Array.from({ length: 5 }, (_, i) => ({ enunciado: `Questão ${i}`, alternativas: ["A", "B", "C", "D"], correta: i % 4, referencia: "Conferir cadastro" }));
+test("requires exactly five questions", () => { expect(validateGeneratedQuestions(questions())).toHaveLength(5); expect(() => validateGeneratedQuestions(questions().slice(1))).toThrow(); });
+test("requires exactly four distinct alternatives", () => { const q = questions(); q[0].alternativas = ["A", "B", "C"]; expect(() => validateGeneratedQuestions(q)).toThrow(); q[0].alternativas = ["A", "B", "C", "A"]; expect(() => validateGeneratedQuestions(q)).toThrow(); });
+test("requires one correct alternative index between zero and three", () => { const q = questions(); q[0].correta = 4; expect(() => validateGeneratedQuestions(q)).toThrow(); q[0].correta = 1.5; expect(() => validateGeneratedQuestions(q)).toThrow(); });
+test("requires literal grounding in the selected training", () => { expect(validateGeneratedQuestions(questions(), "Conferir cadastro antes de salvar")).toHaveLength(5); expect(() => validateGeneratedQuestions(questions(), "Emitir boleto")).toThrow(); });
