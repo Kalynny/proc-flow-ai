@@ -5,6 +5,6 @@
 - [x] Test training isolation and verify the signed-in flow.
 
 # Phase 2: Manager results panel
-- [ ] Reuse existing assessment results and verify authorization and history data.
-- [ ] Add authorized results list, collaborator/training filters and answer details.
-- [ ] Preserve history and Phase 1 behavior; test permissions and signed-in flow.
+- [x] Reuse existing assessment results and verify authorization and history data.
+- [x] Add authorized results list, collaborator/training filters and answer details.
+- [x] Preserve history and Phase 1 behavior; test permissions and signed-in flow.
