@@ -203,6 +203,10 @@ export default function ProcedimentoPage() {
             </button>
             {canEdit && (
               <>
+                <Button variant="outline" disabled={assessmentLoading || editingAssessment} onClick={() => {
+                  setEditingAssessment(true);
+                  window.requestAnimationFrame(() => document.getElementById("training-assessment-editor")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+                }}><FileText className="size-4" />{assessment ? "Editar prova" : "Gerar prova"}</Button>
                 <Link to={`/procedimento/${id}/editar`}
                   className="flex items-center gap-2 border border-border px-4 py-2 rounded-md text-sm font-medium hover:bg-muted/40">
                   <Pencil className="size-4" /> Editar
@@ -286,10 +290,7 @@ export default function ProcedimentoPage() {
                 </div>
               </div>
             )}
-            {canEdit && !editingAssessment && <div className="px-5 py-3 border-t border-border">
-              <Button variant="outline" onClick={() => setEditingAssessment(true)}><Pencil className="size-4" />{assessment ? "Editar prova" : "Cadastrar prova"}</Button>
-            </div>}
-            {canEdit && editingAssessment && id && <AssessmentEditor key={id} trainingId={id} title={p.titulo} onClose={() => setEditingAssessment(false)} onSaved={() => { setEditingAssessment(false); void loadAssessment(id); }} />}
+            {canEdit && editingAssessment && id && <div id="training-assessment-editor"><AssessmentEditor key={id} trainingId={id} title={p.titulo} onClose={() => setEditingAssessment(false)} onSaved={() => { setEditingAssessment(false); void loadAssessment(id); }} /></div>}
           </div>
 
           <Card title="Passo a passo">
