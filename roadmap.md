@@ -8,3 +8,8 @@
 - [x] Reuse existing assessment results and verify authorization and history data.
 - [x] Add authorized results list, collaborator/training filters and answer details.
 - [x] Preserve history and Phase 1 behavior; test permissions and signed-in flow.
+
+# AI assessment generation
+- [ ] Reuse the assessment editor and saved-training content for AI drafts.
+- [ ] Enforce five questions, four alternatives, one answer and source grounding.
+- [ ] Confirm replacements, preserve scores and verify generation/review/save end to end.
