@@ -9,6 +9,7 @@ import { Button } from "@/components/Button";
 import { AssessmentEditor } from "@/components/AssessmentEditor";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
+import { validateGeneratedQuestions, type GeneratedQuestion } from "../../supabase/functions/gerar-prova/validation";
 
 export default function ProcedimentoPage() {
   const { id } = useParams();
@@ -32,6 +33,30 @@ export default function ProcedimentoPage() {
   const [assessmentLoading, setAssessmentLoading] = useState(true);
   const [assessmentError, setAssessmentError] = useState(false);
   const [editingAssessment, setEditingAssessment] = useState(false);
+  const [generatingAssessment, setGeneratingAssessment] = useState(false);
+  const [assessmentDraft, setAssessmentDraft] = useState<GeneratedQuestion[] | undefined>();
+
+  async function generateAssessment() {
+    if (!id || !canEdit || generatingAssessment) return;
+    setGeneratingAssessment(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("gerar-prova", { body: { procedimento_id: id } });
+      if (error) {
+        let message = "Não foi possível gerar a prova. Tente novamente.";
+        if (error.context instanceof Response) {
+          const response = await error.context.json().catch(() => null);
+          if (response && typeof response.error === "string") message = response.error;
+        }
+        throw new Error(message);
+      }
+      if (!data || data.procedimento_id !== id) throw new Error("A geração não corresponde a este treinamento.");
+      setAssessmentDraft(validateGeneratedQuestions(data.questoes));
+      setEditingAssessment(true);
+      toast.success("Cinco perguntas geradas. Revise antes de salvar.");
+      window.requestAnimationFrame(() => document.getElementById("training-assessment-editor")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    } catch (error) { toast.error(error instanceof Error ? error.message : "Não foi possível gerar a prova. Tente novamente."); }
+    finally { setGeneratingAssessment(false); }
+  }
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
 
   async function excluir() {
@@ -133,6 +158,7 @@ export default function ProcedimentoPage() {
   useEffect(() => {
     let active = true;
     setP(null); setSelectedVideo(null); setAssessment(null); setAssessmentLoading(true); setAssessmentError(false); setEditingAssessment(false);
+    setAssessmentDraft(undefined);
     (async () => {
       if (!id) return;
       const [training, versions, exam] = await Promise.all([
@@ -203,7 +229,9 @@ export default function ProcedimentoPage() {
             </button>
             {canEdit && (
               <>
-                <Button variant="outline" disabled={assessmentLoading || editingAssessment} onClick={() => {
+                <Button variant="outline" disabled={assessmentLoading || generatingAssessment || editingAssessment} onClick={generateAssessment}><FileText className="size-4" />{generatingAssessment ? "Gerando prova…" : "Gerar Prova com IA"}</Button>
+                <Button variant="outline" disabled={assessmentLoading || editingAssessment || generatingAssessment} onClick={() => {
+                  setAssessmentDraft(undefined);
                   setEditingAssessment(true);
                   window.requestAnimationFrame(() => document.getElementById("training-assessment-editor")?.scrollIntoView({ behavior: "smooth", block: "start" }));
                 }}><FileText className="size-4" />{assessment ? "Editar prova" : "Gerar prova"}</Button>
@@ -290,7 +318,7 @@ export default function ProcedimentoPage() {
                 </div>
               </div>
             )}
-            {canEdit && editingAssessment && id && <div id="training-assessment-editor"><AssessmentEditor key={id} trainingId={id} title={p.titulo} onClose={() => setEditingAssessment(false)} onSaved={() => { setEditingAssessment(false); void loadAssessment(id); }} /></div>}
+            {canEdit && editingAssessment && id && <div id="training-assessment-editor"><AssessmentEditor key={id} trainingId={id} title={p.titulo} initialDraft={assessmentDraft} onClose={() => { setEditingAssessment(false); setAssessmentDraft(undefined); }} onSaved={() => { setEditingAssessment(false); setAssessmentDraft(undefined); void loadAssessment(id); }} /></div>}
           </div>
 
           <Card title="Passo a passo">
