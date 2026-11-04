@@ -21,7 +21,8 @@ Deno.serve(async (req) => {
     const { data: training, error } = await client.from("procedimentos").select("titulo,objetivo,passo_a_passo,alertas,problemas_comuns,sistemas").eq("id", body.procedimento_id).maybeSingle();
     if (error || !training) return reply({ error: "Treinamento não encontrado." }, 404);
     if (!Array.isArray(training.passo_a_passo) || !training.passo_a_passo.some((s: unknown) => typeof s === "string" && s.trim().length > 0)) return reply({ error: "Este treinamento precisa de um passo a passo preenchido para gerar a prova." }, 400);
-    const source = JSON.stringify(training);
+    const flat = (v: unknown): string => Array.isArray(v) ? v.map(flat).join("\n") : v && typeof v === "object" ? Object.values(v).map(flat).join("\n") : v == null ? "" : String(v);
+    const source = Object.entries(training).map(([k, v]) => `${k}:\n${flat(v)}`).join("\n\n");
     if (source.length > 60000) return reply({ error: "O conteúdo é muito extenso para esta geração. Utilize o cadastro manual." }, 400);
     const response = await generateResponse({
       model: "openai/gpt-6-astra", reasoning: { effort: "low" },

@@ -8,7 +8,8 @@ export function validateGeneratedQuestions(value: unknown, source?: string): Gen
     const alternativas: string[] = q.alternativas.map((a: string) => a.trim());
     if (new Set(alternativas.map(normalize)).size !== 4) throw new Error("As alternativas devem ser distintas.");
     if (typeof q.correta !== "number" || !Number.isInteger(q.correta) || q.correta < 0 || q.correta > 3) throw new Error("Selecione uma única resposta correta.");
-    if (typeof q.referencia !== "string" || !q.referencia.trim() || (source !== undefined && !normalize(source).includes(normalize(q.referencia)))) throw new Error("A pergunta não possui referência válida no treinamento.");
+    const loose = (text: string) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\\[nrt"]/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
+    if (typeof q.referencia !== "string" || !q.referencia.trim() || (source !== undefined && !loose(source).includes(loose(q.referencia)))) throw new Error("A pergunta não possui referência válida no treinamento.");
     return { enunciado: q.enunciado.trim(), alternativas, correta: q.correta, referencia: q.referencia.trim() };
   });
   if (new Set(questions.map(q => normalize(q.enunciado))).size !== 5) throw new Error("As perguntas devem ser distintas.");
