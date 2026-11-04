@@ -87,7 +87,7 @@ export function AssessmentEditor({ trainingId, title, onSaved, onClose, initialD
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground">Resposta correta: alternativa {q.correta + 1}</span>
-          <Button variant="ghost" title="Excluir questão" aria-label={`Excluir questão ${i + 1}`} onClick={() => setQuestoes((current) => current.filter((_, index) => index !== i))}><Trash2 className="size-4" /></Button>
+          {!initialDraft && <Button variant="ghost" title="Excluir questão" aria-label={`Excluir questão ${i + 1}`} onClick={() => setQuestoes((current) => current.filter((_, index) => index !== i))}><Trash2 className="size-4" /></Button>}
         </div>
       </fieldset>)}
       <div className="flex flex-wrap justify-between gap-3">
