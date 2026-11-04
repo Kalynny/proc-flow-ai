@@ -10,6 +10,6 @@
 - [x] Preserve history and Phase 1 behavior; test permissions and signed-in flow.
 
 # AI assessment generation
-- [ ] Reuse the assessment editor and saved-training content for AI drafts.
-- [ ] Enforce five questions, four alternatives, one answer and source grounding.
-- [ ] Confirm replacements, preserve scores and verify generation/review/save end to end.
+- [x] Reuse the assessment editor and saved-training content for AI drafts.
+- [x] Enforce five questions, four alternatives, one answer and source grounding.
+- [x] Confirm replacements, preserve scores and verify generation/review/save end to end.
